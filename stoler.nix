@@ -21,6 +21,25 @@
       slack
     ];
 
+    # Enable GPG natively
+    programs.gpg = {
+      enable = true;
+    };
+
+    services.gpg-agent = {
+      enable = true;
+      pinentryPackage = pkgs.pinentry-universal; 
+      enableSshSupport = true;
+      enableExtraSocket = true;
+    };
+
+    programs.bash = {
+      enable = true;
+      initExtra = ''
+        export GPG_TTY=$(tty)
+      '';
+    };
+
     programs.lazygit = {
       enable = true;
       settings = {

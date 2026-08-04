@@ -69,6 +69,7 @@
   # PROGRAMS
   programs.firefox.enable = true;
   programs.chromium.enable = true;
+  services.openssh.enable = true;
 
   environment.systemPackages = with pkgs; [
     git

@@ -65,8 +65,7 @@
 
   environment.systemPackages = with pkgs; [
     git
-    vi
-    vim
+    nano
     curl
     wget
   ];

@@ -20,7 +20,7 @@
     enable = true;
     alsa.enable = true;
     pulse.enable = true;
-  }
+  };
 
   # BOOTLOADER SETUP
   boot.loader.systemd-boot.enable = true;
@@ -41,7 +41,7 @@
 
   # TIMEZONE and LOCALE
   time.timeZone = "America/Los_Angeles";
-  il8n.defaultLocale = "en_US.UTF-8";
+  i18n.defaultLocale = "en_US.UTF-8";
 
   # NETWORKING
   networking.hostName = "stoletop";
@@ -52,7 +52,7 @@
   # DISPLAY AND GUI
   services.xserver.enable = true;
 
-  services.displaymanager.sddm.enable = true;
+  services.displayManager.sddm.enable = true;
   services.desktopManager.plasma6.enable = true;
   programs.niri.enable = true;
 

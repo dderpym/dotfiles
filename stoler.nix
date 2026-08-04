@@ -14,6 +14,7 @@
 
       # chat
       vesktop
+      slack
     ];
   };
 }

@@ -28,7 +28,7 @@
 
     services.gpg-agent = {
       enable = true;
-      pinentryPackage = pkgs.pinentry-universal; 
+      pinentryPackage = pkgs.pinentry-all; 
       enableSshSupport = true;
       enableExtraSocket = true;
     };

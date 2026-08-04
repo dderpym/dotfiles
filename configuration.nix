@@ -56,6 +56,13 @@
   services.desktopManager.plasma6.enable = true;
   programs.niri.enable = true;
 
+  # FONTS
+  fonts.packages = with pkgs; [
+    nerd-fonts.jetbrains-mono
+    nerd-fonts.fira-code
+    nerd-fonts.droid-sans-mono
+  ];
+
   # CONTAINERS
   virtualisation.docker.enable = true;
 

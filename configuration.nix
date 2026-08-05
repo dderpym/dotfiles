@@ -6,7 +6,7 @@
 
 {
   # HARDWARE SETUP
-  imports =
+  imports = [
     ./hardware-configuration.nix
     ./stoler.nix
     inputs.nix-index-database.nixosModules.nix-index

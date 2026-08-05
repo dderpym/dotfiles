@@ -7,6 +7,8 @@
   };
 
   home-manager.users.stoler = { pkgs, ... }: {
+    imports = [ inputs.catppuccin.homeModules.catppuccin ];
+
     home.stateVersion = "25.11"; # Match your system's NixOS release version
 
     home.packages = with pkgs; [
@@ -20,7 +22,12 @@
       slack
     ];
 
-    # Enable GPG natively
+    catppuccin = {
+      enable = true;
+      flavor = "mocha";
+      accent = "blue";
+    };
+
     programs.gpg = {
       enable = true;
     };
@@ -90,7 +97,6 @@
       };
     };
 
-    # Allows Home Manager to manage itself
     programs.home-manager.enable = true;
   };
 }

@@ -39,6 +39,7 @@
       enable = true;
       initExtra = ''
         export GPG_TTY=$(tty)
+        source ${pkgs.blesh}/share/blesh/ble.sh
       '';
     };
 

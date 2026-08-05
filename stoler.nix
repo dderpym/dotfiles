@@ -1,8 +1,6 @@
 { pkgs, inputs, ... }:
 
 {
-  _module.args = { inherit inputs; };
-
   users.users.stoler = {
     isNormalUser = true;
     extraGroups = [ "wheel" "networkmanager" "docker" ];
@@ -12,10 +10,6 @@
     home.stateVersion = "25.11"; # Match your system's NixOS release version
 
     home.packages = with pkgs; [
-      # terminal
-      kitty
-      inputs.flyline.packages.${pkgs.system}.default
-
       # coding
       neovim
       lazygit
@@ -40,11 +34,25 @@
       enableExtraSocket = true;
     };
 
+    programs.kitty = {
+      enable = true;
+      shellIntegration = {
+        enableBashIntegration = true; # Automatically injects Kitty's integration script into Bash
+        mode = "enabled";            # Keeps default features: no-cursor, title, completion, prompt-mark
+      };
+      settings = {
+        # Allows Kitty to recognize shell processes without popping confirmation modals
+        confirm_os_window_close = -1; # Close window if the shell has no running child tasks
+      };
+    };
+
     programs.bash = {
       enable = true;
       initExtra = ''
         export GPG_TTY=$(tty)
-        enable -f ${inputs.flyline.packages.${pkgs.stdenv.hostPlatform.system}.default}/lib/libflyline.so flyline
+        if [[ -f "${inputs.flyline.packages.${pkgs.stdenv.hostPlatform.system}.default}/lib/libflyline.so" ]]; then
+          enable -f "${inputs.flyline.packages.${pkgs.stdenv.hostPlatform.system}.default}/lib/libflyline.so" flyline
+        fi
       '';
     };
 

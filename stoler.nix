@@ -37,24 +37,44 @@
     programs.kitty = {
       enable = true;
       shellIntegration = {
-        enableBashIntegration = true; # Automatically injects Kitty's integration script into Bash
-        mode = "enabled";            # Keeps default features: no-cursor, title, completion, prompt-mark
+        enableBashIntegration = true;
+        mode = "enabled";
       };
       settings = {
-        # Allows Kitty to recognize shell processes without popping confirmation modals
-        confirm_os_window_close = -1; # Close window if the shell has no running child tasks
+        confirm_os_window_close = -1;
       };
     };
 
     programs.bash = {
       enable = true;
       initExtra = ''
-        FLYLINE_SO="${inputs.flyline.packages.${pkgs.stdenv.hostPlatform.system}.default}/lib/libflyline.so"
-        if [[ -f "$FLYLINE_SO" ]]; then
-          enable -f "$FLYLINE_SO" flyline >/dev/null 2>&1
-        fi
+        enable -f "${inputs.flyline.packages.${pkgs.stdenv.hostPlatform.system}.default}/lib/libflyline.so" flyline >/dev/null 2>&1
       '';
     };
+
+    programs.starship = {
+      enable = true;
+      enableBashIntegration = true;
+      
+      settings = {
+        # Keeps spacing between commands, but won't force a line on shell startup
+        add_newline = true;
+
+        # Basic fast preset (you can customize modules here)
+        format = "$directory$git_branch$git_status$character";
+
+        character = {
+          success_symbol = "[❯](bold green)";
+          error_symbol = "[❯](bold red)";
+        };
+
+        directory = {
+          style = "bold cyan";
+          truncation_length = 3;
+        };
+      };
+    };
+  };
 
     programs.lazygit = {
       enable = true;

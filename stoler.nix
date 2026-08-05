@@ -57,10 +57,8 @@
       enableBashIntegration = true;
       
       settings = {
-        # Keeps spacing between commands, but won't force a line on shell startup
-        add_newline = true;
+        add_newline = false;
 
-        # Basic fast preset (you can customize modules here)
         format = "$directory$git_branch$git_status$character";
 
         character = {
@@ -74,7 +72,6 @@
         };
       };
     };
-  };
 
     programs.lazygit = {
       enable = true;

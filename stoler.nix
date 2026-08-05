@@ -49,9 +49,9 @@
     programs.bash = {
       enable = true;
       initExtra = ''
-        export GPG_TTY=$(tty)
-        if [[ -f "${inputs.flyline.packages.${pkgs.stdenv.hostPlatform.system}.default}/lib/libflyline.so" ]]; then
-          enable -f "${inputs.flyline.packages.${pkgs.stdenv.hostPlatform.system}.default}/lib/libflyline.so" flyline
+        FLYLINE_SO="${inputs.flyline.packages.${pkgs.stdenv.hostPlatform.system}.default}/lib/libflyline.so"
+        if [[ -f "$FLYLINE_SO" ]]; then
+          enable -f "$FLYLINE_SO" flyline >/dev/null 2>&1
         fi
       '';
     };

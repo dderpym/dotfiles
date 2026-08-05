@@ -1,17 +1,22 @@
-{ pkgs, ... }:
+{ pkgs, inputs, ... }:
 
 {
+  _module.args = { inherit inputs; };
+
   users.users.stoler = {
     isNormalUser = true;
     extraGroups = [ "wheel" "networkmanager" "docker" ];
   };
 
   home-manager.users.stoler = { pkgs, ... }: {
-    home.stateVersion = "24.11"; # Match your system's NixOS release version
+    home.stateVersion = "25.11"; # Match your system's NixOS release version
 
     home.packages = with pkgs; [
-      # productivity
+      # terminal
       kitty
+      inputs.flyline.packages.${pkgs.system}.default
+
+      # coding
       neovim
       lazygit
       lazydocker
@@ -39,7 +44,7 @@
       enable = true;
       initExtra = ''
         export GPG_TTY=$(tty)
-        source ${pkgs.blesh}/share/blesh/ble.sh
+        enable -f ${inputs.flyline.packages.${pkgs.stdenv.hostPlatform.system}.default}/lib/libflyline.so flyline
       '';
     };
 

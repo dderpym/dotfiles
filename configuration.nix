@@ -7,11 +7,9 @@
 {
   # HARDWARE SETUP
   imports =
-  [ # Include the results of the hardware scan.
     ./hardware-configuration.nix
-
-    # Include the user file
     ./stoler.nix
+    inputs.nix-index-database.nixosModules.nix-index
   ];
 
   services.libinput.enable = true;
@@ -79,6 +77,8 @@
     curl
     wget
   ];
+
+  programs.nix-index-database.comma.enable = true;
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.

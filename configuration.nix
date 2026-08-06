@@ -19,9 +19,9 @@
 
   services.upower.enable = true;
   services.power-profiles-daemon.enable = true;
-  services.logind = {
-    lidSwitch = "suspend";
-    powerKey = "poweroff";
+  services.logind.settings.Login = {
+    HandleLidSwitch = "suspend";
+    HandlePowerKey = "poweroff";
   };
 
   # BOOTLOADER SETUP

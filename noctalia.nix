@@ -14,7 +14,8 @@
   # Custom scheme: Catppuccin Mocha with a true red error color. The bundled
   # Catppuccin "red" (#f38ba8) reads pink on dark — it drives the battery's
   # low/critical state and the system-monitor critical color. Palette is
-  # otherwise identical to the bundled Catppuccin; only dark mError changes.
+  # otherwise identical to the bundled Catppuccin; only dark mError and dark
+  # mHover change (hover: teal #94e2d5 → mocha blue #89b4fa).
   xdg.configFile."noctalia/colorschemes/Catppuccin-Traffic/Catppuccin-Traffic.json" = {
     text = builtins.toJSON {
       dark = {
@@ -32,7 +33,7 @@
         mOnSurfaceVariant = "#a3b4eb";
         mOutline = "#4c4f69";
         mShadow = "#11111b";
-        mHover = "#94e2d5";
+        mHover = "#89b4fa"; # was #94e2d5 (mocha teal, reads aqua) — now mocha blue
         mOnHover = "#11111b";
         terminal = {
           normal = {

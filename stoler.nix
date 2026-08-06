@@ -14,10 +14,21 @@
 
     home.stateVersion = "25.11";
 
+    # niri config is versioned here rather than hand-edited in ~/.config.
+    # (home-manager/nixpkgs in this rev have no programs.niri.settings module,
+    # so we deploy the raw KDL — see niri/config.kdl.)
+    xdg.configFile."niri/config.kdl".source = ./niri/config.kdl;
+
     home.packages = with pkgs; [
       # locks
       hyprlock
       wlogout
+
+      # desktop shell — bar, launcher, notifications, lock, wallpaper, clipboard.
+      # Replaces the ironbar/wofi/swaylock stack; launched from niri via
+      # spawn-at-startup in ~/.config/niri/config.kdl. v4 (Quickshell-based);
+      # the native v5 shell is beta and not yet packaged in nixpkgs.
+      noctalia-shell
 
       # coding
       neovim

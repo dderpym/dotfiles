@@ -23,6 +23,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # provides programs.niri.settings (KDL-from-Nix) for home-manager,
+    # missing from home-manager/nixpkgs in this rev
+    niri-flake = {
+      url = "github:sodiboo/niri-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     flyline = {
       url = "github:HalFrgrd/flyline";
       inputs.nixpkgs.follows = "nixpkgs";

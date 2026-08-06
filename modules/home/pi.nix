@@ -4,6 +4,8 @@ let
   mp = inputs.mattpocock-skills; # github:mattpocock/skills (flake = false)
   pt = inputs.ponytail;          # github:dietrichgebert/ponytail (flake = false)
 
+  llm = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
+
   # The 14 skills pi runs, mapped to their pinned source dirs. Bump with
   # `nix flake update`. pi discovers these from ~/.pi/agent/skills/.
   skills = {
@@ -54,6 +56,29 @@ let
   });
 in
 {
+  # pi binary from llm-agents (bun-compiled; ships fd/ripgrep itself), plus
+  # the runtime deps it needs for package management (bun/node/uv) and browser
+  # automation (agent-browser + chromium via playwright). Was previously a
+  # wrapped package in pkgs/pi/flake.nix; folded in here so llm-agents' pi is
+  # used directly. llm-agents keeps its own nixpkgs (unstable) so
+  # cache.numtide.com hits — see the input comment in flake.nix.
+  home.packages = [
+    llm.pi
+    llm.agent-browser
+    pkgs.bun
+    pkgs.nodejs_24
+    pkgs.uv
+    pkgs.chromium
+    pkgs.playwright-driver.browsers
+  ];
+
+  # playwright must use the nix-provided browsers instead of downloading its
+  # own (which fails on NixOS). Exported session-wide; harmless single-user.
+  home.sessionVariables = {
+    PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD = "1";
+    PLAYWRIGHT_BROWSERS_PATH = "${pkgs.playwright-driver.browsers}";
+  };
+
   # Skills: pinned from flake inputs, symlinked into pi's skill dir. pi only
   # reads skills, so store symlinks are fine. The parent dir stays a real dir,
   # so pi can still add new skills at runtime.

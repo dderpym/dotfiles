@@ -97,11 +97,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1785915908,
-        "narHash": "sha256-w8Y1qjJk6EtHcb19Y3j3zQS2RJIc+aBothyS2iqe57Q=",
+        "lastModified": 1786048948,
+        "narHash": "sha256-6M41tolUX//fWo2UZ9zjIxFMRtEySmbvECZHw49i2qw=",
         "owner": "HalFrgrd",
         "repo": "flyline",
-        "rev": "473c663016aec8c15edf45ff9e436178c6c77b77",
+        "rev": "6619b3cd62190e4b48dd8a8f617a2eb09f1b6f56",
         "type": "github"
       },
       "original": {
@@ -140,11 +140,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1785978111,
-        "narHash": "sha256-SRn4t1trc8GFTo9y4yU8aF6Lg+H5ykHC67QDnBaRwYE=",
+        "lastModified": 1786014936,
+        "narHash": "sha256-ToQkMfyiH/Af/AMpkJi5zR0fVb1QO1lg9jiyzhLVyjc=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "efa77d0fc9553758c11ddd22274cb39018aabd48",
+        "rev": "5028d4667177f2593ceac30f9c8395afaf6a54d9",
         "type": "github"
       },
       "original": {
@@ -297,11 +297,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1785734586,
-        "narHash": "sha256-ODZkEK9Gy50yg6h98u7KkitZ3oc/uuTFK00bh1CRdNA=",
+        "lastModified": 1785989512,
+        "narHash": "sha256-HFQhkQcl5D1hUNoen3SGHCSFCt2Bg6uP+HgbrnA3InQ=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "531670d871c0e29724a02f3cbcac170adc65b58c",
+        "rev": "445d861c6d31b4af0c79d8d4be2331f762a361d7",
         "type": "github"
       },
       "original": {
@@ -310,25 +310,6 @@
         "repo": "nixpkgs",
         "type": "github"
       }
-    },
-    "pi-agent": {
-      "inputs": {
-        "llm-agents": [
-          "llm-agents"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "path": "./pkgs/pi/",
-        "type": "path"
-      },
-      "original": {
-        "path": "./pkgs/pi/",
-        "type": "path"
-      },
-      "parent": []
     },
     "ponytail": {
       "flake": false,
@@ -358,7 +339,6 @@
         "nix-index-database": "nix-index-database",
         "nixpkgs": "nixpkgs_2",
         "nixpkgs-unstable": "nixpkgs-unstable",
-        "pi-agent": "pi-agent",
         "ponytail": "ponytail"
       }
     },

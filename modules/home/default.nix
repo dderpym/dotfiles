@@ -1,0 +1,28 @@
+{ inputs, ... }:
+
+{
+  users.users.stoler = {
+    isNormalUser = true;
+    extraGroups = [ "wheel" "networkmanager" "docker" ];
+  };
+
+  home-manager.users.stoler = { pkgs, lib, inputs, unstable, ... }: {
+    imports = [
+      inputs.catppuccin.homeModules.catppuccin
+      inputs.niri-flake.homeModules.config
+      ./catppuccin.nix
+      ./packages.nix
+      ./gpg.nix
+      ./shell.nix
+      ./kitty.nix
+      ./niri.nix
+      ./noctalia.nix
+      ./mimeapps.nix
+      ./pi.nix
+    ];
+
+    home.stateVersion = "25.11";
+
+    programs.home-manager.enable = true;
+  };
+}

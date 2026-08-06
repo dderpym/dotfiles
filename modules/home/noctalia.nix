@@ -1,7 +1,7 @@
-{ config, lib, pkgs, inputs, ... }:
+{ config, lib, pkgs, unstable, ... }:
 
 let
-  noctalia = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.noctalia;
+  noctalia = unstable.noctalia;
   tomlFormat = pkgs.formats.toml { };
   configToml = tomlFormat.generate "noctalia-config.toml" {
     # --- THEME ---
@@ -400,108 +400,9 @@ in
     source = validatedConfigToml;
   };
 
-  # Custom scheme: Catppuccin Mocha with a true red error color. The bundled
-  # Catppuccin "red" (#f38ba8) reads pink on dark — it drives the battery's
-  # low/critical state and the sysmon critical color. Palette is otherwise
-  # identical to the bundled Catppuccin; only dark mError and dark mHover
-  # change (hover: teal #94e2d5 → mocha blue #89b4fa).
-  #
-  # v5 keeps the v4 colorscheme JSON format verbatim, just under palettes/
-  # instead of colorschemes/ (selected via [theme] source/custom_palette).
+  # Custom scheme: Catppuccin Mocha with a true red error color — see
+  # ./palettes/catppuccin-traffic.nix for the palette itself.
   xdg.configFile."noctalia/palettes/Catppuccin-Traffic.json" = {
-    text = builtins.toJSON {
-      dark = {
-        mPrimary = "#cba6f7";
-        mOnPrimary = "#11111b";
-        mSecondary = "#fab387";
-        mOnSecondary = "#11111b";
-        mTertiary = "#94e2d5";
-        mOnTertiary = "#11111b";
-        mError = "#f38ba8";
-        mOnError = "#11111b";
-        mSurface = "#1e1e2e";
-        mOnSurface = "#cdd6f4";
-        mSurfaceVariant = "#313244";
-        mOnSurfaceVariant = "#a3b4eb";
-        mOutline = "#4c4f69";
-        mShadow = "#11111b";
-        mHover = "#89b4fa";
-        mOnHover = "#11111b";
-        terminal = {
-          normal = {
-            black = "#45475a";
-            red = "#f38ba8";
-            green = "#a6e3a1";
-            yellow = "#f9e2af";
-            blue = "#89b4fa";
-            magenta = "#f5c2e7";
-            cyan = "#94e2d5";
-            white = "#a6adc8";
-          };
-          bright = {
-            black = "#585b70";
-            red = "#f37799";
-            green = "#89d88b";
-            yellow = "#ebd391";
-            blue = "#74a8fc";
-            magenta = "#f2aede";
-            cyan = "#6bd7ca";
-            white = "#bac2de";
-          };
-          foreground = "#cdd6f4";
-          background = "#1e1e2e";
-          selectionFg = "#cdd6f4";
-          selectionBg = "#585b70";
-          cursorText = "#1e1e2e";
-          cursor = "#f5e0dc";
-        };
-      };
-      light = {
-        mPrimary = "#8839ef";
-        mOnPrimary = "#eff1f5";
-        mSecondary = "#fe640b";
-        mOnSecondary = "#eff1f5";
-        mTertiary = "#40a02b";
-        mOnTertiary = "#eff1f5";
-        mError = "#d20f39"; # already a true red in light mode
-        mOnError = "#dce0e8";
-        mSurface = "#eff1f5";
-        mOnSurface = "#4c4f69";
-        mSurfaceVariant = "#ccd0da";
-        mOnSurfaceVariant = "#6c6f85";
-        mOutline = "#a5adcb";
-        mShadow = "#dce0e8";
-        mHover = "#40a02b";
-        mOnHover = "#eff1f5";
-        terminal = {
-          normal = {
-            black = "#51576d";
-            red = "#e78284";
-            green = "#a6d189";
-            yellow = "#e5c890";
-            blue = "#8caaee";
-            magenta = "#f4b8e4";
-            cyan = "#81c8be";
-            white = "#a5adce";
-          };
-          bright = {
-            black = "#626880";
-            red = "#e67172";
-            green = "#8ec772";
-            yellow = "#d9ba73";
-            blue = "#7b9ef0";
-            magenta = "#f2a4db";
-            cyan = "#5abfb5";
-            white = "#b5bfe2";
-          };
-          foreground = "#c6d0f5";
-          background = "#303446";
-          selectionFg = "#c6d0f5";
-          selectionBg = "#626880";
-          cursorText = "#303446";
-          cursor = "#f2d5cf";
-        };
-      };
-    };
+    text = builtins.toJSON (import ./palettes/catppuccin-traffic.nix);
   };
 }

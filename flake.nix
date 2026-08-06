@@ -54,11 +54,15 @@
       url = "github:nixos/nixpkgs/nixos-unstable";
     };
 
+    # llm-agents provides the pi package (and agent-browser). It keeps its own
+    # nixpkgs (unstable) on purpose: numtide's binary cache
+    # (cache.numtide.com) builds against it, so pi/rtk/agent-browser hit the
+    # cache instead of compiling from source. Do NOT add a follows here.
     llm-agents.url = "github:numtide/llm-agents.nix";
 
     # Agent skills for pi (Agent Skills standard). Pinned as inputs so `nix
     # flake update` bumps them like any other dependency; pi discovers the
-    # pinned dirs from ~/.pi/agent/skills/ (see pi.nix).
+    # pinned dirs from ~/.pi/agent/skills/ (see modules/home/pi.nix).
     mattpocock-skills = {
       url = "github:mattpocock/skills";
       flake = false;
@@ -68,34 +72,31 @@
       url = "github:dietrichgebert/ponytail";
       flake = false;
     };
-
-    pi-agent = {
-      url = "path:./pkgs/pi/";
-      inputs.nixpkgs.follows = "nixpkgs";
-      # llm-agents stays on its own nixpkgs (unstable) so numtide's
-      # binary cache (cache.numtide.com) hits for pi/rtk/agent-browser.
-      inputs.llm-agents.follows = "llm-agents";
-    };
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }@inputs: {
-    nixosConfigurations = {
-      stoletop = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        specialArgs = { inherit inputs; }; 
-        modules = [
-          ./configuration.nix
-          
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            # let home-manager modules (noctalia.nix) see flake inputs
-            home-manager.extraSpecialArgs = { inherit inputs; };
-          }
-        ];
+  outputs = { self, nixpkgs, home-manager, ... }@inputs:
+    let
+      system = "x86_64-linux";
+      # packages that only exist on unstable (noctalia); see input comment above
+      unstable = inputs.nixpkgs-unstable.legacyPackages.${system};
+    in
+    {
+      nixosConfigurations = {
+        stoletop = nixpkgs.lib.nixosSystem {
+          inherit system;
+          specialArgs = { inherit inputs unstable; };
+          modules = [
+            ./configuration.nix
+
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              # let home-manager modules (noctalia.nix) see flake inputs
+              home-manager.extraSpecialArgs = { inherit inputs unstable; };
+            }
+          ];
+        };
       };
     };
-  };
 }
-

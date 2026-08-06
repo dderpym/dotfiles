@@ -41,6 +41,16 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # noctalia v5 is packaged only on nixpkgs unstable (the 26.05 `noctalia-shell`
+    # package is the old v4 quickshell line). Pinning unstable as a separate
+    # input keeps the rest of the system on 26.05 and gets the prebuilt
+    # `noctalia` from cache.nixos.org — the default binary cache — so no
+    # cachix setup is needed. (Following the noctalia flake input instead would
+    # drag in its channel-tarball nixpkgs and defeat its cachix cache.)
+    nixpkgs-unstable = {
+      url = "github:nixos/nixpkgs/nixos-unstable";
+    };
+
     llm-agents.url = "github:numtide/llm-agents.nix";
 
     pi-agent = {
@@ -64,6 +74,8 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
+            # let home-manager modules (noctalia.nix) see flake inputs
+            home-manager.extraSpecialArgs = { inherit inputs; };
           }
         ];
       };

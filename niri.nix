@@ -5,7 +5,7 @@
 
   programs.niri.settings = {
     spawn-at-startup = [
-      { argv = [ "noctalia-shell" ]; }
+      { argv = [ "noctalia" ]; }
     ];
 
     input = {
@@ -116,7 +116,22 @@
         ];
         open-floating = true;
       }
+
+      # noctalia v5 settings window (dev.noctalia.Noctalia) — float it at a
+      # fixed size so the settings UI doesn't tile
+      {
+        matches = [ { app-id = "dev.noctalia.Noctalia$"; } ];
+        open-floating = true;
+        default-column-width = { fixed = 1080; };
+        default-window-height = { fixed = 920; };
+      }
     ];
+
+    # lets noctalia notification actions / window activation work even when
+    # the activation serial has expired (recommended by noctalia's niri docs)
+    debug = {
+      honor-xdg-activation-with-invalid-serial = true;
+    };
 
     binds = {
       "Mod+Shift+Slash".action.show-hotkey-overlay = [ ];
@@ -129,8 +144,8 @@
       };
       "Mod+R" = {
         hotkey-overlay.title = "Open the App Launcher: ";
-        # noctalia's launcher via quickshell IPC (wofi was removed from the stack)
-        action.spawn = [ "noctalia-shell" "ipc" "call" "launcher" "toggle" ];
+        # noctalia's launcher via IPC (wofi was removed from the stack)
+        action.spawn = [ "noctalia" "msg" "panel-toggle" "launcher" ];
       };
       "Mod+W" = {
         hotkey-overlay.title = "Open a browser: firefox";
@@ -142,8 +157,8 @@
       };
       "Super+Alt+L" = {
         hotkey-overlay.title = "Lock the Screen: noctalia";
-        # noctalia's built-in lock screen (WlSessionLock) via quickshell IPC
-        action.spawn = [ "noctalia-shell" "ipc" "call" "lockScreen" "lock" ];
+        # noctalia's built-in lock screen (WlSessionLock) via IPC
+        action.spawn = [ "noctalia" "msg" "session" "lock" ];
       };
 
       # Volume keys (allow-when-locked so they work while the session is locked)

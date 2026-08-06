@@ -18,7 +18,9 @@
     home.stateVersion = "25.11";
 
     home.packages = with pkgs; [
-      noctalia-shell
+      # noctalia v5 — only packaged on nixpkgs unstable (see flake.nix); the
+      # 26.05 `noctalia-shell` was the v4 quickshell line this replaces
+      inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.noctalia
 
       # file browser
       nemo          # Mod+F bind

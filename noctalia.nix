@@ -1,22 +1,379 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, inputs, ... }:
 
+let
+  noctalia = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.noctalia;
+  tomlFormat = pkgs.formats.toml { };
+  configToml = tomlFormat.generate "noctalia-config.toml" {
+    # --- THEME ---
+    # Custom Catppuccin palette with a true-red error color (see
+    # palettes/Catppuccin-Traffic.json) — mirrors the v4 colorscheme.
+    theme = {
+      mode = "dark";
+      source = "custom";
+      custom_palette = "Catppuccin-Traffic";
+    };
+
+    # --- BAR (edge-to-edge, grows out of the top of the screen) ---
+    # margin_ends = 0 + concave_edge_corners = true replicates the v4 "simple"
+    # bar: full width, top corners flat against the screen, bottom corners
+    # carved inward. radius 16 = v4 frameRadius.
+    bar.default = {
+      position = "top";
+      enabled = true;
+      auto_hide = false;
+      show_on_workspace_switch = true;
+      reserve_space = true;
+      layer = "top";
+      thickness = 34;
+      background_opacity = 0.9;
+      border_width = 0.0;
+      radius = 16;
+      concave_edge_corners = true;
+      margin_edge = 0;
+      margin_ends = 0;
+      padding = 6;
+      widget_spacing = 6;
+      hover_highlight = true;
+      scale = 1.0;
+      font_weight = 500;
+      capsule = true;
+      capsule_fill = "surface_variant";
+      capsule_opacity = 0.9;
+      start = [ "control-center" "active_window" "media" ];
+      center = [ "workspaces" ];
+      end = [
+        "tray"
+        "volume"
+        "brightness"
+        "battery"
+        "group:sysmon"
+        "clock"
+        "notifications"
+        "clipboard"
+        "session"
+      ];
+
+      capsule_group = [
+        {
+          id = "sysmon";
+          members = [ "cpu" "ram" "temp" ];
+        }
+      ];
+    };
+
+    # --- WIDGETS ---
+    widget = {
+      workspaces = {
+        labels_only_when_occupied = true;
+        hide_when_empty = true;
+        focused_color = "primary";
+        occupied_color = "outline";
+        empty_color = "outline";
+        urgent_color = "error";
+        font_weight = 700;
+      };
+
+      active_window = {
+        display = "icon_and_text";
+        max_length = 320;
+        title_scroll = "on_hover";
+      };
+
+      media = {
+        hide_when_no_media = true;
+        artist_first = true;
+        title_scroll = "on_hover";
+        max_length = 300;
+      };
+
+      tray = { drawer = true; };
+
+      volume = {
+        icon_color = "tertiary";
+        show_label = false;
+        actions = { middle = "exec pwvucontrol || pavucontrol"; };
+      };
+
+      brightness = {
+        icon_color = "secondary";
+        show_label = false;
+      };
+
+      battery = {
+        display_mode = "graphic";
+        device = "auto";
+      };
+
+      cpu = {
+        type = "sysmon";
+        stat = "cpu_usage";
+        font_family = "monospace";
+      };
+
+      ram = {
+        type = "sysmon";
+        stat = "ram_used";
+        font_family = "monospace";
+      };
+
+      temp = {
+        type = "sysmon";
+        stat = "cpu_temp";
+        font_family = "monospace";
+      };
+
+      clock = {
+        format = "{:%H:%M}";
+        tooltip_format = "{:%H:%M %a, %b %d}";
+      };
+    };
+
+    shell = {
+      avatar_path = "/home/stoler/.face";
+      font_family = "Sans Serif";
+      time_format = "{:%H:%M}";
+      setup_wizard_enabled = false;
+      telemetry_enabled = false;
+      clipboard_enabled = true;
+      clipboard_history_max_entries = 100;
+      clipboard_keep_from_closed_apps = true;
+      clipboard_auto_paste = "off";
+
+      animation = {
+        enabled = true;
+        speed = 1.0;
+      };
+
+      shadow = {
+        direction = "down_right";
+        alpha = 0.55;
+      };
+
+      launcher = {
+        categories = true;
+        show_icons = true;
+        compact = false;
+        app_grid = false;
+        sort_by_usage = true;
+        fetch_exchange_rates = true;
+        provider_prefix = "/";
+        auto_paste = "off";
+
+        providers = {
+          session = { global = true; };
+          windows = { global = true; };
+        };
+      };
+
+      panel = {
+        session_placement = "floating";
+        session_position = "center";
+      };
+
+      mpris = { blacklist = [ ]; };
+
+      screen_corners = { enabled = false; };
+
+      session.actions = [
+        {
+          action = "lock";
+          enabled = true;
+          shortcut = "1";
+        }
+        {
+          action = "logout";
+          enabled = true;
+          shortcut = "2";
+        }
+        {
+          action = "lock_and_suspend";
+          enabled = true;
+          shortcut = "3";
+          countdown_seconds = 10.0;
+        }
+        {
+          action = "reboot";
+          enabled = true;
+          shortcut = "4";
+          countdown_seconds = 10.0;
+        }
+        {
+          action = "shutdown";
+          enabled = true;
+          shortcut = "5";
+          variant = "destructive";
+          countdown_seconds = 10.0;
+        }
+      ];
+    };
+
+    # --- IDLE (noctalia owns idle/suspend; timeouts are the single source of
+    idle = {
+      behavior_order = [ "lock" "screen-off" "lock-and-suspend" ];
+      pre_action_fade_seconds = 5.0;
+
+      behavior = {
+        lock = {
+          enabled = true;
+          timeout = 660;
+        };
+        "screen-off" = {
+          enabled = true;
+          timeout = 600;
+        };
+        "lock-and-suspend" = {
+          enabled = true;
+          timeout = 1800;
+        };
+      };
+    };
+
+    # --- LOCKSCREEN ---
+    lockscreen = {
+      enabled = true;
+      # v4 allowPasswordWithFprintd = false
+      fingerprint = false;
+      # v4 lockScreenBlur = 0 / lockScreenTint = 0
+      blur_intensity = 0.0;
+      tint_intensity = 0.0;
+      # NOTE: beta.7 locks before logind suspend by default; the schema doesn't
+      # expose lock_before_suspend yet (docs-only), so leave it unset.
+    };
+
+    # --- NOTIFICATIONS ---
+    notification = {
+      enable_daemon = true;
+      position = "top_right";
+      background_opacity = 0.95;
+      border = true;
+      collapse_on_dismiss = true;
+    };
+
+    # --- OSD ---
+    osd = {
+      enabled = true;
+      position = "top_right";
+      position_vertical = "top_right";
+    };
+
+    # --- AUDIO ---
+    audio = {
+      enable_overdrive = false;
+      enable_sounds = false;
+      sound_volume = 0.5;
+    };
+
+    # --- BRIGHTNESS ---
+    brightness = {
+      enable_ddcutil = false;
+      minimum_brightness = 0.0;
+      sync_all_monitors = false;
+    };
+
+    # --- NIGHT LIGHT (v4 autoSchedule with manual times) ---
+    nightlight = {
+      enabled = false;
+      force = false;
+      temperature_day = 6500;
+      temperature_night = 4000;
+    };
+
+    # --- LOCATION / WEATHER ---
+    location = {
+      auto_locate = true;
+      custom_schedule = true;
+      sunrise = "06:30";
+      sunset = "18:30";
+    };
+
+    weather = {
+      enabled = true;
+      effects = true;
+      refresh_minutes = 30;
+      unit = "metric";
+    };
+
+    # --- CONTROL CENTER ---
+    control_center = {
+      sidebar = "compact";
+      sidebar_section = "compact";
+      hidden_tabs = [ "monitor" ];
+      calendar = { show_week_numbers = false; };
+    };
+
+    # --- SYSTEM MONITOR (traffic-light thresholds carried over from v4) ---
+    system.monitor = {
+      cpu_usage_activity_threshold = 80;
+      cpu_usage_critical_threshold = 90;
+      cpu_temp_activity_threshold = 80;
+      cpu_temp_critical_threshold = 90;
+      ram_pct_activity_threshold = 80;
+      ram_pct_critical_threshold = 90;
+      swap_pct_activity_threshold = 80;
+      swap_pct_critical_threshold = 90;
+      disk_used_pct_activity_threshold = 80;
+      disk_used_pct_critical_threshold = 90;
+      disk_free_pct_activity_threshold = 20;
+      disk_free_pct_critical_threshold = 10;
+      gpu_usage_activity_threshold = 80;
+      gpu_usage_critical_threshold = 90;
+      gpu_temp_activity_threshold = 80;
+      gpu_temp_critical_threshold = 90;
+    };
+
+    battery = { warning_threshold = 20; };
+
+    dock = {
+      enabled = false;
+      pinned = [ "kitty.desktop" "firefox.desktop" "vesktop.desktop" "slack.desktop" ];
+    };
+
+    desktop_widgets = { enabled = false; };
+
+    backdrop = { enabled = false; };
+
+    wallpaper = {
+      enabled = true;
+      directory = "/home/stoler/Pictures/Wallpapers";
+      fill_mode = "crop";
+      fill_color = "#1e1e2e";
+      transition = [ "fade" "wipe" "disc" "stripes" "honeycomb" ];
+      transition_duration = 1500;
+      # v4 skipStartupTransition = false → animate the first wallpaper at startup
+      transition_on_startup = true;
+      edge_smoothness = 0.05;
+
+      automation = {
+        enabled = false;
+        interval_seconds = 300;
+        order = "alphabetical";
+        recursive = true;
+      };
+    };
+
+    calendar = { enabled = false; };
+  };
+
+  validatedConfigToml = pkgs.runCommand "noctalia-config-validated.toml" { } ''
+    ${lib.getExe noctalia} config validate ${configToml} >/dev/null
+    cp ${configToml} $out
+  '';
+in
 {
-  # Noctalia desktop shell (bar, launcher, notifications, dock, wallpaper, lock).
-  # v4 (Quickshell-based) reads ~/.config/noctalia/settings.json; the shell also
-  # watches the config dir and hot-reloads on atomic replacement, so a
-  # `home-manager switch` re-applies without restarting the shell.
-  #
-  # Declarative tradeoff: settings.json is a read-only store symlink, so UI
-  # setting changes won't persist — edit this file instead. colors.json and
-  # plugins.json are deliberately left shell-owned: the shell regenerates
-  # colors.json from the selected scheme and writes plugin download state into
-  # plugins.json; making either read-only would break those features.
+  xdg.configFile."noctalia/config.toml" = {
+    force = true;
+    source = validatedConfigToml;
+  };
+
   # Custom scheme: Catppuccin Mocha with a true red error color. The bundled
   # Catppuccin "red" (#f38ba8) reads pink on dark — it drives the battery's
-  # low/critical state and the system-monitor critical color. Palette is
-  # otherwise identical to the bundled Catppuccin; only dark mError and dark
-  # mHover change (hover: teal #94e2d5 → mocha blue #89b4fa).
-  xdg.configFile."noctalia/colorschemes/Catppuccin-Traffic/Catppuccin-Traffic.json" = {
+  # low/critical state and the sysmon critical color. Palette is otherwise
+  # identical to the bundled Catppuccin; only dark mError and dark mHover
+  # change (hover: teal #94e2d5 → mocha blue #89b4fa).
+  #
+  # v5 keeps the v4 colorscheme JSON format verbatim, just under palettes/
+  # instead of colorschemes/ (selected via [theme] source/custom_palette).
+  xdg.configFile."noctalia/palettes/Catppuccin-Traffic.json" = {
     text = builtins.toJSON {
       dark = {
         mPrimary = "#cba6f7";
@@ -25,7 +382,7 @@
         mOnSecondary = "#11111b";
         mTertiary = "#94e2d5";
         mOnTertiary = "#11111b";
-        mError = "#ef4444"; # was #f38ba8 — reads pink on dark, not red
+        mError = "#f38ba8";
         mOnError = "#11111b";
         mSurface = "#1e1e2e";
         mOnSurface = "#cdd6f4";
@@ -33,7 +390,7 @@
         mOnSurfaceVariant = "#a3b4eb";
         mOutline = "#4c4f69";
         mShadow = "#11111b";
-        mHover = "#89b4fa"; # was #94e2d5 (mocha teal, reads aqua) — now mocha blue
+        mHover = "#89b4fa";
         mOnHover = "#11111b";
         terminal = {
           normal = {
@@ -109,657 +466,6 @@
           cursorText = "#303446";
           cursor = "#f2d5cf";
         };
-      };
-    };
-  };
-
-  xdg.configFile."noctalia/settings.json" = {
-    # Replace the shell-managed file (force = remove the existing regular file)
-    force = true;
-    text = builtins.toJSON {
-      settingsVersion = 59;
-
-      # --- APP LAUNCHER ---
-      appLauncher = {
-        autoPasteClipboard = false;
-        clipboardWatchImageCommand = "wl-paste --type image --watch cliphist store";
-        clipboardWatchTextCommand = "wl-paste --type text --watch cliphist store";
-        clipboardWrapText = true;
-        customLaunchPrefix = "";
-        customLaunchPrefixEnabled = false;
-        density = "default";
-        enableClipPreview = true;
-        enableClipboardChips = true;
-        # cliphist is already wired above; turn on history search in the launcher
-        enableClipboardHistory = true;
-        enableClipboardSmartIcons = true;
-        enableSessionSearch = true;
-        enableSettingsSearch = true;
-        enableWindowsSearch = true;
-        iconMode = "tabler";
-        ignoreMouseInput = false;
-        overviewLayer = false;
-        pinnedApps = [];
-        position = "center";
-        screenshotAnnotationTool = "";
-        showCategories = true;
-        showIconBackground = false;
-        sortByMostUsed = true;
-        # kitty is the default terminal here (was alacritty, which isn't installed)
-        terminalCommand = "kitty -e";
-        viewMode = "list";
-      };
-
-      # --- AUDIO ---
-      audio = {
-        mprisBlacklist = [];
-        preferredPlayer = "";
-        spectrumFrameRate = 30;
-        spectrumMirrored = true;
-        visualizerType = "linear";
-        volumeFeedback = false;
-        volumeFeedbackSoundFile = "";
-        volumeOverdrive = false;
-        volumeStep = 5;
-      };
-
-      # --- BAR (edge-to-edge, grows out of the top of the screen) ---
-      # "simple" type: bar spans the full edge, top corners are flat against
-      # the screen, bottom corners inverted (outerCorners) — the "coming out
-      # of the top" look. Margins only apply to the floating type, zeroed here.
-      bar = {
-        autoHideDelay = 500;
-        autoShowDelay = 150;
-        backgroundOpacity = 0.9;
-        barType = "simple";
-        capsuleColorKey = "none";
-        capsuleOpacity = 0.9;
-        contentPadding = 2;
-        density = "default";
-        displayMode = "always_visible";
-        enableExclusionZoneInset = true;
-        fontScale = 1;
-        frameRadius = 16;
-        frameThickness = 8;
-        hideOnOverview = false;
-        marginHorizontal = 0;
-        marginVertical = 0;
-        middleClickAction = "none";
-        middleClickCommand = "";
-        middleClickFollowMouse = false;
-        monitors = [];
-        mouseWheelAction = "none";
-        mouseWheelWrap = true;
-        outerCorners = true;
-        position = "top";
-        reverseScroll = false;
-        rightClickAction = "controlCenter";
-        rightClickCommand = "";
-        rightClickFollowMouse = true;
-        screenOverrides = [];
-        showCapsule = true;
-        showOnWorkspaceSwitch = true;
-        showOutline = false;
-        useSeparateOpacity = false;
-        widgetSpacing = 6;
-        widgets = {
-          center = [
-            {
-              characterCount = 2;
-              colorizeIcons = false;
-              # "none" resolves to the muted mOnSurface — unselected pills stay
-              # quiet while the focused one keeps the mauve pop
-              emptyColor = "none";
-              enableScrollWheel = true;
-              focusedColor = "primary";
-              followFocusedScreen = false;
-              fontWeight = "bold";
-              groupedBorderOpacity = 1;
-              # only show pills for workspaces that actually have windows
-              hideUnoccupied = true;
-              iconScale = 0.8;
-              id = "Workspace";
-              labelMode = "index";
-              occupiedColor = "none";
-              pillSize = 0.6;
-              showApplications = false;
-              showApplicationsHover = false;
-              showBadge = true;
-              showLabelsOnlyWhenOccupied = true;
-              unfocusedIconsOpacity = 1;
-            }
-          ];
-          # left: control-center owl + expandable window title / media
-          left = [
-            {
-              # noctalia owl logo — opens the control center; sits far left
-              # where the launcher used to be. Mauve to match the old rocket.
-              colorizeDistroLogo = false;
-              colorizeSystemIcon = "primary";
-              colorizeSystemText = "none";
-              customIconPath = "";
-              enableColorization = true;
-              icon = "noctalia";
-              id = "ControlCenter";
-              useDistroLogo = false;
-            }
-            {
-              colorizeIcons = false;
-              hideMode = "hidden";
-              id = "ActiveWindow";
-              # room to breathe — window titles get wide
-              maxWidth = 320;
-              scrollingMode = "hover";
-              showIcon = true;
-              showText = true;
-              textColor = "none";
-              useFixedWidth = false;
-            }
-            {
-              compactMode = false;
-              hideMode = "hidden";
-              # collapse entirely when nothing is playing
-              hideWhenIdle = true;
-              id = "MediaMini";
-              maxWidth = 300;
-              panelShowAlbumArt = true;
-              scrollingMode = "hover";
-              showAlbumArt = true;
-              showArtistFirst = true;
-              showProgressRing = true;
-              showVisualizer = false;
-              textColor = "none";
-              useFixedWidth = false;
-              visualizerType = "linear";
-            }
-          ];
-          # right: tray, volume, brightness, battery, sysinfo, clock, notifs
-          right = [
-            {
-              blacklist = [];
-              chevronColor = "none";
-              colorizeIcons = false;
-              drawerEnabled = true;
-              hidePassive = false;
-              id = "Tray";
-              pinned = [];
-            }
-            {
-              displayMode = "onhover";
-              # teal audio icon — a little pop
-              iconColor = "tertiary";
-              id = "Volume";
-              middleClickCommand = "pwvucontrol || pavucontrol";
-              textColor = "none";
-            }
-            {
-              applyToAllMonitors = false;
-              displayMode = "onhover";
-              # peach brightness icon — a little pop
-              iconColor = "secondary";
-              id = "Brightness";
-              textColor = "none";
-            }
-            {
-              deviceNativePath = "__default__";
-              displayMode = "graphic-clean";
-              hideIfIdle = false;
-              hideIfNotDetected = true;
-              id = "Battery";
-              showNoctaliaPerformance = false;
-              showPowerProfiles = false;
-            }
-            {
-              compactMode = true;
-              diskPath = "/";
-              iconColor = "none";
-              id = "SystemMonitor";
-              showCpuCores = false;
-              showCpuFreq = false;
-              showCpuTemp = true;
-              showCpuUsage = true;
-              showDiskAvailable = false;
-              showDiskUsage = false;
-              showDiskUsageAsPercent = false;
-              showGpuTemp = false;
-              showLoadAverage = false;
-              showMemoryAsPercent = false;
-              showMemoryUsage = true;
-              showNetworkStats = false;
-              showSwapUsage = false;
-              textColor = "none";
-              useMonospaceFont = true;
-              usePadding = false;
-            }
-            {
-              # minimal clock; full date in the tooltip
-              clockColor = "none";
-              customFont = "";
-              formatHorizontal = "HH:mm";
-              formatVertical = "HH mm - dd MM";
-              id = "Clock";
-              tooltipFormat = "HH:mm ddd, MMM dd";
-              useCustomFont = false;
-            }
-            {
-              hideWhenZero = false;
-              hideWhenZeroUnread = false;
-              iconColor = "none";
-              id = "NotificationHistory";
-              showUnreadBadge = true;
-              unreadBadgeColor = "primary";
-            }
-          ];
-        };
-      };
-
-      # --- BRIGHTNESS ---
-      brightness = {
-        backlightDeviceMappings = [];
-        brightnessStep = 5;
-        enableDdcSupport = false;
-        enforceMinimum = true;
-      };
-
-      # --- CALENDAR ---
-      calendar = {
-        cards = [
-          { enabled = true; id = "calendar-header-card"; }
-          { enabled = true; id = "calendar-month-card"; }
-          { enabled = true; id = "weather-card"; }
-        ];
-      };
-
-      # --- COLOR SCHEMES ---
-      colorSchemes = {
-        darkMode = true;
-        generationMethod = "tonal-spot";
-        manualSunrise = "06:30";
-        manualSunset = "18:30";
-        monitorForColors = "";
-        # Custom Catppuccin scheme with a true-red error color (see the
-        # colorschemes/ file above) — otherwise matches the catppuccin module
-        # (mocha/blue) and the niri border gradient elsewhere in this config.
-        predefinedScheme = "Catppuccin-Traffic";
-        schedulingMode = "off";
-        syncGsettings = true;
-        useWallpaperColors = false;
-      };
-
-      # --- CONTROL CENTER ---
-      controlCenter = {
-        cards = [
-          { enabled = true; id = "profile-card"; }
-          { enabled = true; id = "shortcuts-card"; }
-          { enabled = true; id = "audio-card"; }
-          { enabled = false; id = "brightness-card"; }
-          { enabled = true; id = "weather-card"; }
-          { enabled = true; id = "media-sysmon-card"; }
-        ];
-        diskPath = "/";
-        position = "close_to_bar_button";
-        shortcuts = {
-          left = [
-            { id = "Network"; }
-            { id = "Bluetooth"; }
-            { id = "WallpaperSelector"; }
-            { id = "NoctaliaPerformance"; }
-          ];
-          right = [
-            { id = "Notifications"; }
-            { id = "PowerProfile"; }
-            { id = "KeepAwake"; }
-            { id = "NightLight"; }
-          ];
-        };
-      };
-
-      # --- DESKTOP WIDGETS ---
-      desktopWidgets = {
-        enabled = false;
-        gridSnap = false;
-        gridSnapScale = false;
-        monitorWidgets = [];
-        overviewEnabled = true;
-      };
-
-      # --- DOCK ---
-      dock = {
-        animationSpeed = 1;
-        backgroundOpacity = 0.9;
-        colorizeIcons = false;
-        deadOpacity = 0.6;
-        displayMode = "auto_hide";
-        dockType = "floating";
-        # dock disabled — apps are launched from the launcher (Mod+R)
-        enabled = false;
-        floatingRatio = 1;
-        groupApps = false;
-        groupClickAction = "cycle";
-        groupContextMenuMode = "extended";
-        groupIndicatorStyle = "dots";
-        # running-but-unfocused apps get a mauve indicator dot
-        inactiveIndicators = true;
-        indicatorColor = "primary";
-        indicatorOpacity = 0.8;
-        indicatorThickness = 3;
-        launcherIcon = "";
-        launcherIconColor = "none";
-        launcherPosition = "end";
-        launcherUseDistroLogo = false;
-        monitors = [];
-        onlySameOutput = true;
-        pinnedApps = [
-          "kitty.desktop"
-          "firefox.desktop"
-          "vesktop.desktop"
-          "slack.desktop"
-        ];
-        pinnedStatic = false;
-        position = "bottom";
-        showDockIndicator = false;
-        showLauncherIcon = false;
-        sitOnFrame = false;
-        size = 1;
-      };
-
-      # --- GENERAL ---
-      general = {
-        allowPanelsOnScreenWithoutBar = true;
-        allowPasswordWithFprintd = false;
-        animationDisabled = false;
-        animationSpeed = 1;
-        autoStartAuth = false;
-        avatarImage = "/home/stoler/.face";
-        boxRadiusRatio = 1;
-        clockFormat = "hh\\nmm";
-        clockStyle = "custom";
-        compactLockScreen = false;
-        dimmerOpacity = 0.2;
-        enableBlurBehind = true;
-        enableLockScreenCountdown = true;
-        enableLockScreenMediaControls = false;
-        enableShadows = true;
-        forceBlackScreenCorners = false;
-        iRadiusRatio = 1;
-        keybinds = {
-          keyDown = [ "Down" ];
-          keyEnter = [ "Return" "Enter" ];
-          keyEscape = [ "Esc" ];
-          keyLeft = [ "Left" ];
-          keyRemove = [ "Del" ];
-          keyRight = [ "Right" ];
-          keyUp = [ "Up" ];
-        };
-        language = "";
-        lockOnSuspend = true;
-        lockScreenAnimations = false;
-        lockScreenBlur = 0;
-        lockScreenCountdownDuration = 10000;
-        lockScreenMonitors = [];
-        lockScreenTint = 0;
-        passwordChars = false;
-        radiusRatio = 1;
-        reverseScroll = false;
-        scaleRatio = 1;
-        screenRadiusRatio = 1;
-        shadowDirection = "bottom_right";
-        shadowOffsetX = 2;
-        shadowOffsetY = 3;
-        # declarative config: no changelog nag on every start
-        showChangelogOnStartup = false;
-        showHibernateOnLockScreen = false;
-        showScreenCorners = false;
-        showSessionButtonsOnLockScreen = true;
-        smoothScrollEnabled = true;
-        telemetryEnabled = false;
-      };
-
-      # --- HOOKS ---
-      hooks = {
-        colorGeneration = "";
-        darkModeChange = "";
-        enabled = false;
-        performanceModeDisabled = "";
-        performanceModeEnabled = "";
-        screenLock = "";
-        screenUnlock = "";
-        session = "";
-        startup = "";
-        wallpaperChange = "";
-      };
-
-      # --- IDLE (noctalia owns idle/suspend; hypridle was removed from the
-      # stack — these timeouts are the single source of truth) ---
-      idle = {
-        customCommands = "[]";
-        enabled = true;
-        fadeDuration = 5;
-        lockCommand = "";
-        lockTimeout = 660;
-        resumeLockCommand = "";
-        resumeScreenOffCommand = "";
-        resumeSuspendCommand = "";
-        screenOffCommand = "";
-        screenOffTimeout = 600;
-        suspendCommand = "";
-        suspendTimeout = 1800;
-      };
-
-      # --- LOCATION / WEATHER ---
-      location = {
-        analogClockInCalendar = false;
-        # IP geolocation via api.noctalia.dev (city-level; no GPS/geoclue
-        # needed), refreshed every 30 min. The resolved city is written to
-        # settings.json at runtime — that write fails silently against the
-        # read-only store symlink, so the city just lives in memory and is
-        # re-derived on every start. Set `name` below as an offline fallback
-        # if you want one (geolocate wins when it succeeds).
-        autoLocate = true;
-        firstDayOfWeek = -1;
-        hideWeatherCityName = false;
-        hideWeatherTimezone = false;
-        name = "";
-        showCalendarEvents = true;
-        showCalendarWeather = true;
-        showWeekNumberInCalendar = false;
-        use12hourFormat = false;
-        useFahrenheit = false;
-        weatherEnabled = true;
-        weatherShowEffects = true;
-        weatherTaliaMascotAlways = false;
-      };
-
-      # --- NETWORK ---
-      network = {
-        bluetoothAutoConnect = true;
-        bluetoothDetailsViewMode = "grid";
-        bluetoothHideUnnamedDevices = false;
-        bluetoothRssiPollIntervalMs = 60000;
-        bluetoothRssiPollingEnabled = false;
-        disableDiscoverability = false;
-        networkPanelView = "wifi";
-        wifiDetailsViewMode = "grid";
-      };
-
-      # --- NIGHT LIGHT ---
-      nightLight = {
-        autoSchedule = true;
-        dayTemp = "6500";
-        enabled = false;
-        forced = false;
-        manualSunrise = "06:30";
-        manualSunset = "18:30";
-        nightTemp = "4000";
-      };
-
-      # --- NOCTALIA PERFORMANCE ---
-      noctaliaPerformance = {
-        disableDesktopWidgets = true;
-        disableWallpaper = true;
-      };
-
-      # --- NOTIFICATIONS ---
-      notifications = {
-        backgroundOpacity = 0.95;
-        clearDismissed = true;
-        criticalUrgencyDuration = 15;
-        density = "default";
-        enableBatteryToast = true;
-        enableKeyboardLayoutToast = true;
-        enableMarkdown = true;
-        enableMediaToast = false;
-        enabled = true;
-        location = "top_right";
-        lowUrgencyDuration = 3;
-        monitors = [];
-        normalUrgencyDuration = 8;
-        overlayLayer = true;
-        respectExpireTimeout = false;
-        saveToHistory = {
-          critical = true;
-          low = true;
-          normal = true;
-        };
-        sounds = {
-          criticalSoundFile = "";
-          enabled = false;
-          excludedApps = "discord,firefox,chrome,chromium,edge";
-          lowSoundFile = "";
-          normalSoundFile = "";
-          separateSounds = false;
-          volume = 0.5;
-        };
-      };
-
-      # --- OSD ---
-      osd = {
-        autoHideMs = 2000;
-        backgroundOpacity = 1;
-        enabled = true;
-        enabledTypes = [ 0 1 2 ];
-        location = "top_right";
-        monitors = [];
-        overlayLayer = true;
-      };
-
-      # --- PLUGINS ---
-      plugins = {
-        autoUpdate = false;
-        notifyUpdates = true;
-      };
-
-      # --- SESSION MENU ---
-      sessionMenu = {
-        countdownDuration = 10000;
-        enableCountdown = true;
-        largeButtonsLayout = "single-row";
-        largeButtonsStyle = true;
-        position = "center";
-        powerOptions = [
-          { action = "lock"; enabled = true; keybind = "1"; }
-          { action = "suspend"; enabled = true; keybind = "2"; }
-          { action = "hibernate"; enabled = true; keybind = "3"; }
-          { action = "reboot"; enabled = true; keybind = "4"; }
-          { action = "logout"; enabled = true; keybind = "5"; }
-          { action = "shutdown"; enabled = true; keybind = "6"; }
-          { action = "rebootToUefi"; enabled = true; keybind = "7"; }
-        ];
-        showHeader = true;
-        showKeybinds = true;
-      };
-
-      # --- SYSTEM MONITOR (traffic-light thresholds) ---
-      # warning → yellow, critical → red (matches the scheme's error red).
-      # Normal state stays mauve: the gauge fill is hardcoded to mPrimary,
-      # the same color as the workspace pill — no per-widget knob for it.
-      systemMonitor = {
-        batteryCriticalThreshold = 5;
-        batteryWarningThreshold = 20;
-        cpuCriticalThreshold = 90;
-        cpuWarningThreshold = 80;
-        criticalColor = "#ef4444";
-        diskAvailCriticalThreshold = 10;
-        diskAvailWarningThreshold = 20;
-        diskCriticalThreshold = 90;
-        diskWarningThreshold = 80;
-        enableDgpuMonitoring = false;
-        externalMonitor = "resources || missioncenter || jdsystemmonitor || corestats || system-monitoring-center || gnome-system-monitor || plasma-systemmonitor || mate-system-monitor || ukui-system-monitor || deepin-system-monitor || pantheon-system-monitor";
-        gpuCriticalThreshold = 90;
-        gpuWarningThreshold = 80;
-        memCriticalThreshold = 90;
-        memWarningThreshold = 80;
-        swapCriticalThreshold = 90;
-        swapWarningThreshold = 80;
-        tempCriticalThreshold = 90;
-        tempWarningThreshold = 80;
-        useCustomColors = true;
-        warningColor = "#f9e2af";
-      };
-
-      # --- TEMPLATES ---
-      templates = {
-        activeTemplates = [];
-        enableUserTheming = false;
-      };
-
-      # --- UI ---
-      ui = {
-        boxBorderEnabled = false;
-        fontDefault = "Sans Serif";
-        fontDefaultScale = 1;
-        fontFixed = "monospace";
-        fontFixedScale = 1;
-        panelBackgroundOpacity = 0.93;
-        panelsAttachedToBar = true;
-        scrollbarAlwaysVisible = true;
-        settingsPanelMode = "attached";
-        settingsPanelSideBarCardStyle = false;
-        tooltipsEnabled = true;
-        translucentWidgets = false;
-      };
-
-      # --- WALLPAPER ---
-      wallpaper = {
-        automationEnabled = false;
-        directory = "/home/stoler/Pictures/Wallpapers";
-        enableMultiMonitorDirectories = false;
-        enabled = true;
-        favorites = [];
-        fillColor = "#000000";
-        fillMode = "crop";
-        hideWallpaperFilenames = false;
-        linkLightAndDarkWallpapers = true;
-        monitorDirectories = [];
-        overviewBlur = 0.4;
-        overviewEnabled = false;
-        overviewTint = 0.6;
-        panelPosition = "follow_bar";
-        randomIntervalSec = 300;
-        setWallpaperOnAllMonitors = true;
-        showHiddenFiles = false;
-        skipStartupTransition = false;
-        # Catppuccin base — used as the solid-color fallback / fill
-        solidColor = "#1e1e2e";
-        sortOrder = "name";
-        transitionDuration = 1500;
-        transitionEdgeSmoothness = 0.05;
-        transitionType = [ "fade" "disc" "stripes" "wipe" "pixelate" "honeycomb" ];
-        useOriginalImages = false;
-        useSolidColor = false;
-        useWallhaven = false;
-        viewMode = "single";
-        wallhavenApiKey = "";
-        wallhavenCategories = "111";
-        wallhavenOrder = "desc";
-        wallhavenPurity = "100";
-        wallhavenQuery = "";
-        wallhavenRatios = "";
-        wallhavenResolutionHeight = "";
-        wallhavenResolutionMode = "atleast";
-        wallhavenResolutionWidth = "";
-        wallhavenSorting = "relevance";
-        wallpaperChangeMode = "random";
       };
     };
   };

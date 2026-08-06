@@ -16,6 +16,8 @@
     pulse.enable = true;
   };
 
+  services.upower.enable = true;
+
   # BOOTLOADER SETUP
   boot.loader.systemd-boot.enable = true;
   boot.loader.systemd-boot.configurationLimit = 5;
@@ -46,8 +48,6 @@
   services.tailscale.useRoutingFeatures = "both";
 
   # DISPLAY AND GUI
-  services.xserver.enable = true;
-
   services.displayManager.sddm.enable = true;
   services.desktopManager.plasma6.enable = true;
   programs.niri.enable = true;
@@ -68,6 +68,10 @@
   services.openssh.enable = true;
 
   environment.systemPackages = with pkgs; [
+    pciutils
+    usbutils
+    lm_sensors
+    efibootmgr
     git
     nano
     curl
@@ -85,9 +89,6 @@
   # };
 
   # List services that you want to enable:
-
-  # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];

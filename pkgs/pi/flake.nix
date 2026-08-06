@@ -50,11 +50,6 @@
         home.packages = [
           self.packages.${pkgs.stdenv.hostPlatform.system}.default
         ];
-
-        home.sessionVariables = {
-          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD = "1";
-          PLAYWRIGHT_BROWSERS_PATH = "${pkgs.playwright-driver.browsers}";
-        };
       };
     };
 }

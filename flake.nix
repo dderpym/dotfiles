@@ -18,7 +18,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    catppuccin.url = "github:catppuccin/nix";
+    catppuccin = {
+      url = "github:catppuccin/nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     flyline = {
       url = "github:HalFrgrd/flyline";
@@ -30,6 +33,9 @@
     pi-agent = {
       url = "path:./pkgs/pi/";
       inputs.nixpkgs.follows = "nixpkgs";
+      # llm-agents stays on its own nixpkgs (unstable) so numtide's
+      # binary cache (cache.numtide.com) hits for pi/rtk/agent-browser.
+      inputs.llm-agents.follows = "llm-agents";
     };
   };
 
@@ -46,7 +52,6 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
           }
-          ./stoler.nix
         ];
       };
     };

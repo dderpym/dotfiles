@@ -18,11 +18,10 @@
     home.stateVersion = "25.11";
 
     home.packages = with pkgs; [
-      # locks
-      hyprlock
-      wlogout
-
       noctalia-shell
+
+      # file browser
+      nemo          # Mod+F bind
 
       # coding
       neovim
@@ -31,30 +30,26 @@
       # chat
       vesktop
       slack
+
+      # media & system keys (niri binds in niri.nix)
+      playerctl     # media keys via MPRIS
+      # pactl is in configuration.nix's systemPackages — the audio stack
+      # (services.pipewire) is system-managed, so its client CLI lives there too.
+      brightnessctl # brightness keys (uses systemd-logind API, no udev rules)
+
+      # screenshot pipeline (niri-shot itself is defined in niri-shot.nix)
+      grim
+      slurp
+      wl-clipboard  # wl-copy: screenshots to clipboard
+      wayfreeze     # freeze the screen while selecting a region
+      jq            # parse niri msg output (also used by Mod+Shift+Q)
+      libnotify     # notify-send: screenshot feedback
+
+      # declarative screenshot helper (region/full -> clip/file)
+      (import ./niri-shot.nix { inherit pkgs; })
     ];
 
-    services.hypridle = {
-      enable = true;
-      settings = {
-        general = {
-          lock_cmd = "pidof hyprlock || hyprlock";
-          before_sleep_cmd = "loginctl lock-session";
-          after_sleep_cmd = "niri msg action power-on-monitors";
-        };
-
-        listener = [
-          {
-            timeout = 600;
-            on-timeout = "niri msg action power-off-monitors";
-            on-resume = "niri msg action power-on-monitors";
-          }
-          {
-            timeout = 1200;
-            on-timeout = "systemctl suspend";
-          }
-        ];
-      };
-    };
+    # idle/suspend is owned by noctalia (see idle.* in noctalia.nix)
 
     catppuccin = {
       enable = true;

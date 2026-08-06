@@ -141,8 +141,9 @@
         action.spawn = "nemo";
       };
       "Super+Alt+L" = {
-        hotkey-overlay.title = "Lock the Screen: swaylock";
-        action.spawn = "swaylock";
+        hotkey-overlay.title = "Lock the Screen: noctalia";
+        # noctalia's built-in lock screen (WlSessionLock) via quickshell IPC
+        action.spawn = [ "noctalia-shell" "ipc" "call" "lockScreen" "lock" ];
       };
 
       # Volume keys (allow-when-locked so they work while the session is locked)
@@ -294,10 +295,11 @@
       "Mod+Ctrl+C".action.center-visible-columns = [ ];
       "Mod+O".action.toggle-window-floating = [ ];
 
-      "Mod+S".action.spawn-sh = "~/.local/bin/niri-shot region clip";
-      "Mod+Shift+S".action.spawn-sh = "~/.local/bin/niri-shot full clip";
-      "Mod+Alt+S".action.spawn-sh = "~/.local/bin/niri-shot region file";
-      "Mod+Shift+Alt+S".action.spawn-sh = "~/.local/bin/niri-shot full file";
+      # niri-shot is a declarative writeShellApplication (see niri-shot.nix)
+      "Mod+S".action.spawn = [ "niri-shot" "region" "clip" ];
+      "Mod+Shift+S".action.spawn = [ "niri-shot" "full" "clip" ];
+      "Mod+Alt+S".action.spawn = [ "niri-shot" "region" "file" ];
+      "Mod+Shift+Alt+S".action.spawn = [ "niri-shot" "full" "file" ];
 
       "Mod+Alt+W".action.set-dynamic-cast-window = [ ];
       "Mod+Alt+M".action.set-dynamic-cast-monitor = [ ];

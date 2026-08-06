@@ -529,10 +529,11 @@
         wallpaperChange = "";
       };
 
-      # --- IDLE (disabled: hypridle owns idle/suspend in this setup) ---
+      # --- IDLE (noctalia owns idle/suspend; hypridle was removed from the
+      # stack — these timeouts are the single source of truth) ---
       idle = {
         customCommands = "[]";
-        enabled = false;
+        enabled = true;
         fadeDuration = 5;
         lockCommand = "";
         lockTimeout = 660;

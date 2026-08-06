@@ -104,6 +104,8 @@
     nano
     curl
     wget
+    # pactl — volume/mute keys (client for the system-managed pipewire-pulse)
+    pulseaudio
   ];
 
   programs.nix-index-database.comma.enable = true;

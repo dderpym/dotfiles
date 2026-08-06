@@ -1,7 +1,40 @@
-{ pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
+let
+  # The noctalia bar always requests compositor blur on its layer surface
+  # (ext-background-effect), regardless of background_opacity — with the bar
+  # background now fully transparent that blur shows through as frosted glass.
+  # Noctalia has no bar-blur toggle, but niri 26.04+ can force-disable
+  # client-requested blur per surface via `background-effect`. The pinned
+  # niri-flake settings module doesn't know that key yet, so append the rule
+  # to the generated config manually (blur stays on for panels/OSD/notifs).
+  barNoBlurRule = ''
+    layer-rule {
+        match namespace="noctalia-bar-default"
+        background-effect {
+            blur false
+        }
+    }
+  '';
+  niriConfig = config.programs.niri.finalConfig + "\n" + barNoBlurRule;
+  validatedNiriConfig = pkgs.runCommand "niri-config.kdl" {
+    inherit niriConfig;
+    passAsFile = [ "niriConfig" ];
+    buildInputs = [ pkgs.niri ];
+  } ''
+    niri validate -c $niriConfigPath
+    cp $niriConfigPath $out
+  '';
+in
 {
   programs.niri.package = pkgs.niri;
+
+  # niri-flake writes xdg.configFile."niri-config" (target niri/config.kdl)
+  # from programs.niri.settings; override it with the validated config plus
+  # the appended bar no-blur rule.
+  xdg.configFile."niri-config" = {
+    source = lib.mkForce validatedNiriConfig;
+  };
 
   programs.niri.settings = {
     spawn-at-startup = [
@@ -152,8 +185,8 @@
         action.spawn = "firefox";
       };
       "Mod+F" = {
-        hotkey-overlay.title = "Open file browser: nemo";
-        action.spawn = "nemo";
+        hotkey-overlay.title = "Open file browser: nautilus";
+        action.spawn = "nautilus";
       };
       "Super+Alt+L" = {
         hotkey-overlay.title = "Lock the Screen: noctalia";

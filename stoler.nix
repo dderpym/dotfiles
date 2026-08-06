@@ -18,12 +18,10 @@
     home.stateVersion = "25.11";
 
     home.packages = with pkgs; [
-      # noctalia v5 — only packaged on nixpkgs unstable (see flake.nix); the
-      # 26.05 `noctalia-shell` was the v4 quickshell line this replaces
       inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.noctalia
 
       # file browser
-      nemo          # Mod+F bind
+      nautilus
 
       # coding
       neovim
@@ -34,18 +32,16 @@
       slack
 
       # media & system keys (niri binds in niri.nix)
-      playerctl     # media keys via MPRIS
-      # pactl is in configuration.nix's systemPackages — the audio stack
-      # (services.pipewire) is system-managed, so its client CLI lives there too.
-      brightnessctl # brightness keys (uses systemd-logind API, no udev rules)
+      playerctl
+      brightnessctl
 
       # screenshot pipeline (niri-shot itself is defined in niri-shot.nix)
       grim
       slurp
-      wl-clipboard  # wl-copy: screenshots to clipboard
-      wayfreeze     # freeze the screen while selecting a region
-      jq            # parse niri msg output (also used by Mod+Shift+Q)
-      libnotify     # notify-send: screenshot feedback
+      wl-clipboard
+      wayfreeze
+      jq
+      libnotify
 
       # declarative screenshot helper (region/full -> clip/file)
       (import ./niri-shot.nix { inherit pkgs; })

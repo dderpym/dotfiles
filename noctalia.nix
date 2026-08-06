@@ -13,10 +13,6 @@ let
       custom_palette = "Catppuccin-Traffic";
     };
 
-    # --- BAR (edge-to-edge, grows out of the top of the screen) ---
-    # margin_ends = 0 + concave_edge_corners = true replicates the v4 "simple"
-    # bar: full width, top corners flat against the screen, bottom corners
-    # carved inward. radius 16 = v4 frameRadius.
     bar.default = {
       position = "top";
       enabled = true;
@@ -25,10 +21,11 @@ let
       reserve_space = true;
       layer = "top";
       thickness = 34;
-      background_opacity = 0.9;
-      border_width = 0.0;
-      radius = 16;
-      concave_edge_corners = true;
+      # invisible bar: no background, no border, no shadow — the square
+      # widget capsules are the only visible ink
+      background_opacity = 0;
+      radius = 0;
+      shadow = false;
       margin_edge = 0;
       margin_ends = 0;
       padding = 6;
@@ -38,7 +35,9 @@ let
       font_weight = 500;
       capsule = true;
       capsule_fill = "surface_variant";
-      capsule_opacity = 0.9;
+      capsule_opacity = 1;
+      capsule_radius = 0;
+      capsule_border = "outline";
       start = [ "control-center" "active_window" "media" ];
       center = [ "workspaces" ];
       end = [
@@ -57,6 +56,10 @@ let
         {
           id = "sysmon";
           members = [ "cpu" "ram" "temp" ];
+          # square shared capsule; primary border matches the control-center
+          # accent, members carry their own icon colors below
+          radius = 0;
+          border = "primary";
         }
       ];
     };
@@ -88,15 +91,23 @@ let
 
       tray = { drawer = true; };
 
+      # accent: the entry point to the shell
+      "control-center" = {
+        icon_color = "primary";
+        capsule_border = "primary";
+      };
+
       volume = {
         icon_color = "tertiary";
         show_label = false;
+        capsule_border = "tertiary";
         actions = { middle = "exec pwvucontrol || pavucontrol"; };
       };
 
       brightness = {
         icon_color = "secondary";
         show_label = false;
+        capsule_border = "secondary";
       };
 
       battery = {
@@ -104,31 +115,52 @@ let
         device = "auto";
       };
 
+      session = {
+        # power menu gets the error color: destructive actions live here
+        icon_color = "error";
+        capsule_border = "error";
+      };
+
       cpu = {
         type = "sysmon";
         stat = "cpu_usage";
         font_family = "monospace";
+        icon_color = "primary";
       };
 
       ram = {
         type = "sysmon";
         stat = "ram_used";
         font_family = "monospace";
+        icon_color = "secondary";
       };
 
       temp = {
         type = "sysmon";
         stat = "cpu_temp";
         font_family = "monospace";
+        icon_color = "tertiary";
       };
 
       clock = {
         format = "{:%H:%M}";
         tooltip_format = "{:%H:%M %a, %b %d}";
+        # blue "now" readout — hover is the only blue role in this palette
+        color = "hover";
+        capsule_border = "hover";
+        font_weight = 700;
       };
     };
 
     shell = {
+      # square all shell surfaces (launcher, control center, notifications,
+      # OSD, popups) to match the bar; 0 = square, 1 = default
+      corner_radius_scale = 0;
+      button_borders = true;
+      input_borders = true;
+      popup_borders = true;
+      card_borders = true;
+
       avatar_path = "/home/stoler/.face";
       font_family = "Sans Serif";
       time_format = "{:%H:%M}";
@@ -168,6 +200,8 @@ let
       panel = {
         session_placement = "floating";
         session_position = "center";
+        # keep the outline on floating panels so square cards read as blocks
+        borders = true;
       };
 
       mpris = { blacklist = [ ]; };
@@ -254,6 +288,7 @@ let
       enabled = true;
       position = "top_right";
       position_vertical = "top_right";
+      border = true; # square OSD cards keep their outline
     };
 
     # --- AUDIO ---

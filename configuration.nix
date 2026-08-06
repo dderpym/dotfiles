@@ -18,6 +18,11 @@
   };
 
   services.upower.enable = true;
+  services.power-profiles-daemon.enable = true;
+  services.logind = {
+    lidSwitch = "suspend";
+    powerKey = "poweroff";
+  };
 
   # BOOTLOADER SETUP
   boot.loader.systemd-boot.enable = true;
@@ -50,8 +55,22 @@
 
   # DISPLAY AND GUI
   services.displayManager.sddm.enable = true;
-  services.desktopManager.plasma6.enable = true;
+  services.displayManager.sddm.wayland.enable = true;
   programs.niri.enable = true;
+  services.desktopManager.plasma6.enable = true;
+
+  xdg.portal = {
+    enable = true;
+    extraPortals = with pkgs; [
+      xdg-desktop-portal-gnome # Works smoothly for Niri's screencast portal implementation
+      xdg-desktop-portal-gtk
+    ];
+    config = {
+      niri = {
+        default = [ "gnome" "gtk" ];
+      };
+    };
+  };
 
   # FONTS
   fonts.packages = with pkgs; [

@@ -83,10 +83,14 @@
     extraPortals = with pkgs; [
       xdg-desktop-portal-gnome # Works smoothly for Niri's screencast portal implementation
       xdg-desktop-portal-gtk
+      xdg-desktop-portal-cosmic # FileChooser portal backed by cosmic-files
     ];
     config = {
       niri = {
         default = [ "gnome" "gtk" ];
+        # Route file pickers to cosmic-files; keep gnome for ScreenCast/
+        # Screenshot (niri implements the GNOME backend natively)
+        "org.freedesktop.impl.portal.FileChooser" = "cosmic";
       };
     };
   };

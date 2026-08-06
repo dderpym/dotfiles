@@ -17,14 +17,14 @@
           pkgs = nixpkgs.legacyPackages.${system};
           
           piPkg = llm-agents.packages.${system}.pi;
-          rtkPkg = llm-agents.packages.${system}.rtk;
+          # rtkPkg = llm-agents.packages.${system}.rtk;
           agentBrowserPkg = llm-agents.packages.${system}.agent-browser;
 
           pi-wrapped = pkgs.writeShellApplication {
             name = "pi";
             runtimeInputs = with pkgs; [
               piPkg
-              rtkPkg
+              # rtkPkg
               agentBrowserPkg
               bun
               nodejs_24

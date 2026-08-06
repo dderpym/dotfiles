@@ -1,13 +1,6 @@
 { config, lib, pkgs, ... }:
 
 let
-  # The noctalia bar always requests compositor blur on its layer surface
-  # (ext-background-effect), regardless of background_opacity — with the bar
-  # background now fully transparent that blur shows through as frosted glass.
-  # Noctalia has no bar-blur toggle, but niri 26.04+ can force-disable
-  # client-requested blur per surface via `background-effect`. The pinned
-  # niri-flake settings module doesn't know that key yet, so append the rule
-  # to the generated config manually (blur stays on for panels/OSD/notifs).
   barNoBlurRule = ''
     layer-rule {
         match namespace="noctalia-bar-default"
@@ -16,6 +9,7 @@ let
         }
     }
   '';
+
   niriConfig = config.programs.niri.finalConfig + "\n" + barNoBlurRule;
   validatedNiriConfig = pkgs.runCommand "niri-config.kdl" {
     inherit niriConfig;
@@ -29,9 +23,6 @@ in
 {
   programs.niri.package = pkgs.niri;
 
-  # niri-flake writes xdg.configFile."niri-config" (target niri/config.kdl)
-  # from programs.niri.settings; override it with the validated config plus
-  # the appended bar no-blur rule.
   xdg.configFile."niri-config" = {
     source = lib.mkForce validatedNiriConfig;
   };
@@ -185,8 +176,8 @@ in
         action.spawn = "firefox";
       };
       "Mod+F" = {
-        hotkey-overlay.title = "Open file browser: nautilus";
-        action.spawn = "nautilus";
+        hotkey-overlay.title = "Open file browser: cosmic-files";
+        action.spawn = "cosmic-files";
       };
       "Super+Alt+L" = {
         hotkey-overlay.title = "Lock the Screen: noctalia";

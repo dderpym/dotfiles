@@ -1,4 +1,4 @@
-{ pkgs, inputs, ... }:
+{ pkgs, inputs, lib, ... }:
 
 {
   users.users.stoler = {
@@ -6,13 +6,14 @@
     extraGroups = [ "wheel" "networkmanager" "docker" ];
   };
 
-  home-manager.users.stoler = { pkgs, ... }: {
+  home-manager.users.stoler = { pkgs, lib, ... }: {
     imports = [
       inputs.catppuccin.homeModules.catppuccin
       inputs.pi-agent.homeModules.default
       inputs.niri-flake.homeModules.config
       ./niri.nix
       ./noctalia.nix
+      ./mimeapps.nix
     ];
 
     home.stateVersion = "25.11";
@@ -20,8 +21,12 @@
     home.packages = with pkgs; [
       inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.noctalia
 
-      # file browser
-      nautilus
+      cosmic-files
+      cosmic-settings
+
+      # default PDF/epub viewer (mimeapps.nix)
+      zathura
+      (catppuccin-papirus-folders.override { flavor = "mocha"; accent = "blue"; })
 
       # coding
       neovim
@@ -35,7 +40,6 @@
       playerctl
       brightnessctl
 
-      # screenshot pipeline (niri-shot itself is defined in niri-shot.nix)
       grim
       slurp
       wl-clipboard
@@ -43,11 +47,17 @@
       jq
       libnotify
 
-      # declarative screenshot helper (region/full -> clip/file)
       (import ./niri-shot.nix { inherit pkgs; })
     ];
 
-    # idle/suspend is owned by noctalia (see idle.* in noctalia.nix)
+    home.file.".config/cosmic/com.system76.CosmicTk/v1/icon_theme".text = ''
+      "Papirus-Dark"
+    '';
+
+    home.activation.catppuccinCosmicTheme = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      ${pkgs.cosmic-settings}/bin/cosmic-settings appearance import \
+        ${inputs.catppuccin-cosmic}/themes/cosmic-settings/catppuccin-mocha-blue+round.ron
+    '';
 
     catppuccin = {
       enable = true;

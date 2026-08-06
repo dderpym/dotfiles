@@ -29,8 +29,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # provides programs.niri.settings (KDL-from-Nix) for home-manager,
-    # missing from home-manager/nixpkgs in this rev
+    catppuccin-cosmic = {
+      url = "github:catppuccin/cosmic-desktop";
+      flake = false;
+    };
+
     niri-flake = {
       url = "github:sodiboo/niri-flake";
       inputs.nixpkgs.follows = "nixpkgs";

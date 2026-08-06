@@ -14,6 +14,7 @@
       ./niri.nix
       ./noctalia.nix
       ./mimeapps.nix
+      ./pi.nix
     ];
 
     home.stateVersion = "25.11";

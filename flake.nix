@@ -56,6 +56,19 @@
 
     llm-agents.url = "github:numtide/llm-agents.nix";
 
+    # Agent skills for pi (Agent Skills standard). Pinned as inputs so `nix
+    # flake update` bumps them like any other dependency; pi discovers the
+    # pinned dirs from ~/.pi/agent/skills/ (see pi.nix).
+    mattpocock-skills = {
+      url = "github:mattpocock/skills";
+      flake = false;
+    };
+
+    ponytail = {
+      url = "github:dietrichgebert/ponytail";
+      flake = false;
+    };
+
     pi-agent = {
       url = "path:./pkgs/pi/";
       inputs.nixpkgs.follows = "nixpkgs";

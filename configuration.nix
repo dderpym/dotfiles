@@ -6,6 +6,7 @@
     ./hardware-configuration.nix
     ./stoler.nix
     inputs.nix-index-database.nixosModules.nix-index
+    inputs.catppuccin.nixosModules.catppuccin
   ];
 
   services.libinput.enable = true;
@@ -64,6 +65,16 @@
   # DISPLAY AND GUI
   services.displayManager.sddm.enable = true;
   services.displayManager.sddm.wayland.enable = true;
+  # Catppuccin SDDM theme — flavor/accent match the home-manager catppuccin
+  # module (stoler.nix) so the login screen matches the session.
+  catppuccin = {
+    enable = true;
+    # Opt into specific ports only (sddm below) — don't auto-enroll everything
+    autoEnable = false;
+    flavor = "mocha";
+    accent = "blue";
+    sddm.enable = true;
+  };
   programs.niri.enable = true;
   services.desktopManager.plasma6.enable = true;
 

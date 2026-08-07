@@ -110,6 +110,22 @@
         "type": "github"
       }
     },
+    "flyline-hm": {
+      "inputs": {
+        "flyline": [
+          "flyline"
+        ]
+      },
+      "locked": {
+        "path": "./pkgs/flyline",
+        "type": "path"
+      },
+      "original": {
+        "path": "./pkgs/flyline",
+        "type": "path"
+      },
+      "parent": []
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -332,6 +348,7 @@
         "catppuccin": "catppuccin",
         "catppuccin-cosmic": "catppuccin-cosmic",
         "flyline": "flyline",
+        "flyline-hm": "flyline-hm",
         "home-manager": "home-manager",
         "llm-agents": "llm-agents",
         "mattpocock-skills": "mattpocock-skills",

@@ -1,0 +1,45 @@
+{
+  "nodes": {
+    "flyline": {
+      "inputs": {
+        "nixpkgs": "nixpkgs"
+      },
+      "locked": {
+        "lastModified": 1786048948,
+        "narHash": "sha256-6M41tolUX//fWo2UZ9zjIxFMRtEySmbvECZHw49i2qw=",
+        "owner": "HalFrgrd",
+        "repo": "flyline",
+        "rev": "6619b3cd62190e4b48dd8a8f617a2eb09f1b6f56",
+        "type": "github"
+      },
+      "original": {
+        "owner": "HalFrgrd",
+        "repo": "flyline",
+        "type": "github"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1783522502,
+        "narHash": "sha256-iffAls3iaNTyJC2faYcUXSI+Gp02cDjYl+MygxKl2GI=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "0bb7ec54c8483066ec9d7720e780a5caa71f8612",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "flyline": "flyline"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}

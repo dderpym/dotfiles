@@ -1,12 +1,12 @@
-{ pkgs, inputs, ... }:
-
 {
   programs.bash = {
     enable = true;
-    postExtra = ''
-      enable -f "${inputs.flyline.packages.${pkgs.stdenv.hostPlatform.system}.default}/lib/libflyline.so" flyline >/dev/null 2>&1
-    '';
   };
+
+  # flyline is enabled via the bespoke home-manager module (imported in
+  # default.nix); it loads the loadable builtin at the very end of .bashrc,
+  # after kitty's shell integration.
+  programs.flyline.enable = true;
 
   programs.starship = {
     enable = true;

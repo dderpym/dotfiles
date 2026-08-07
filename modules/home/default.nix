@@ -10,6 +10,7 @@
     imports = [
       inputs.catppuccin.homeModules.catppuccin
       inputs.niri-flake.homeModules.config
+      inputs.flyline-hm.homeManagerModules.flyline
       ./catppuccin.nix
       ./packages.nix
       ./gpg.nix

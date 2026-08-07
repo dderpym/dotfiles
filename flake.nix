@@ -44,6 +44,15 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Bespoke home-manager module for flyline (upstream only ships a NixOS
+    # module). Path subflake so its inputs lock into this flake; its `flyline`
+    # input follows ours, so the package is built with the same nixpkgs and
+    # flake.lock keeps a single flyline node instead of a `flyline_2`.
+    flyline-hm = {
+      url = "path:./pkgs/flyline";
+      inputs.flyline.follows = "flyline";
+    };
+
     # noctalia v5 is packaged only on nixpkgs unstable (the 26.05 `noctalia-shell`
     # package is the old v4 quickshell line). Pinning unstable as a separate
     # input keeps the rest of the system on 26.05 and gets the prebuilt

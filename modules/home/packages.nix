@@ -26,9 +26,10 @@
     brightnessctl
     pavucontrol
 
-    # noctalia bongocat bar widget reads /dev/input via evtest
-    evtest
 
+    # util
+    btop
+    evtest
     grim
     slurp
     wl-clipboard

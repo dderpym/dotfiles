@@ -3,7 +3,7 @@
 {
   programs.bash = {
     enable = true;
-    initExtra = ''
+    postExtra = ''
       enable -f "${inputs.flyline.packages.${pkgs.stdenv.hostPlatform.system}.default}/lib/libflyline.so" flyline >/dev/null 2>&1
     '';
   };

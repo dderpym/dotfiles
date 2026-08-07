@@ -352,11 +352,8 @@ in
       "Mod+Ctrl+C".action.center-visible-columns = [ ];
       "Mod+O".action.toggle-window-floating = [ ];
 
-      # niri-shot is a declarative writeShellApplication (see niri-shot.nix)
-      "Mod+S".action.spawn = [ "niri-shot" "region" "clip" ];
-      "Mod+Shift+S".action.spawn = [ "niri-shot" "full" "clip" ];
-      "Mod+Alt+S".action.spawn = [ "niri-shot" "region" "file" ];
-      "Mod+Shift+Alt+S".action.spawn = [ "niri-shot" "full" "file" ];
+      "Mod+S".action.spawn = [ "noctalia" "screenshot-region" ];
+      "Mod+Shift+S".action.spawn = [ "noctalia" "screenshoth-fullscreen" ];
 
       "Mod+Alt+W".action.set-dynamic-cast-window = [ ];
       "Mod+Alt+M".action.set-dynamic-cast-monitor = [ ];

@@ -216,28 +216,14 @@ let
       };
 
       panel = {
-        # Control center must be FLOATING, not attached: attached panels
-        # inherit the bar's background_opacity (0 here — the bar is invisible),
-        # so an attached control center renders fully transparent and picks up
-        # a wallpaper blur under niri. Floating panels instead follow
-        # transparency_mode ("solid" = opaque), matching the theme's opaque
-        # surface scheme. (noctalia-dev/noctalia#3796 — confirmed by
-        # maintainers: "if you switch the panel to floating mode, it will
-        # allow its own settings".)
         control_center_placement = "floating";
         session_placement = "floating";
-        # "auto" + open_near_click_* make panels open right under the widget
-        # that opened them (the bar is top, so that means just below it)
-        # instead of centered on screen. open_near_click is ignored when a
-        # floating panel pins a fixed position, hence position = "auto".
         session_position = "auto";
         open_near_click_control_center = true;
         open_near_click_session = true;
         open_near_click_clipboard = true;
-        # launcher is opened from a keybind, not the bar: keep it centered
         launcher_placement = "floating";
         launcher_position = "center";
-        # keep the outline on floating panels so square cards read as blocks
         borders = true;
       };
 

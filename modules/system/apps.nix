@@ -2,7 +2,7 @@
 
 {
   imports = [
-    inputs.nix-index-database.nixosModules.nix-index
+    inputs.nix-index-database.nixosModules.default
   ];
 
   # FONTS

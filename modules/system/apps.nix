@@ -19,6 +19,11 @@
   programs.firefox.enable = true;
   programs.chromium.enable = true;
   services.openssh.enable = true;
+  programs.steam = {
+    enable = true;
+    remotePlay.openFirewall = true; # Optional: open ports for Remote Play
+    dedicatedServer.openFirewall = true; # Optional: open ports for dedicated servers
+  };
 
   environment.systemPackages = with pkgs; [
     pciutils

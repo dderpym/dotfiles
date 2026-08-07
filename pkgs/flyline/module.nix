@@ -46,6 +46,21 @@ in {
         `.bashrc`, after all other shell integration (notably kitty's).
       '';
     };
+
+    agentModeCommand = mkOption {
+      type = types.nullOr types.str;
+      default = null;
+      description = ''
+        A bash command to run right after flyline is enabled, to configure
+        agent mode (e.g. a `flyline set-agent-mode ...` invocation).
+
+        Flyline settings live in the builtin's memory only — nothing is
+        persisted to disk — so any `flyline ...` configuration must be re-run
+        at every shell startup (the README's "copy into your .bashrc").
+        Defining it here instead of a separate `initExtra` guarantees it runs
+        after the `enable -f` line above.
+      '';
+    };
   };
 
   config = mkIf cfg.enable {
@@ -53,7 +68,9 @@ in {
 
     programs.bash.initExtra = mkIf cfg.enableBashIntegration (mkAfter ''
       if [[ $- == *i* ]]; then
-        enable -f "${cfg.package}/lib/libflyline.so" flyline >/dev/null 2>&1
+        if enable -f "${cfg.package}/lib/libflyline.so" flyline >/dev/null 2>&1; then
+          ${optionalString (cfg.agentModeCommand != null) cfg.agentModeCommand}
+        fi
       fi
     '');
   };

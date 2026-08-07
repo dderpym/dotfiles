@@ -10,12 +10,11 @@
 
   programs.flyline.enable = true;
 
+  # full prompt config lives in starship.nix; this module only owns the
+  # bash-init ordering hack and the package
   programs.starship = {
     enable = true;
     enableBashIntegration = false;
-    settings = {
-      add_newline = false;
-    };
   };
 
   programs.lazygit.enable = true;

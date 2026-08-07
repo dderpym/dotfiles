@@ -15,6 +15,7 @@
       ./packages.nix
       ./gpg.nix
       ./shell.nix
+      ./starship.nix
       ./kitty.nix
       ./niri.nix
       ./noctalia.nix

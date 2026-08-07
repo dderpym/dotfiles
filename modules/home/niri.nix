@@ -30,17 +30,6 @@ in
   programs.niri.settings = {
     spawn-at-startup = [
       { argv = [ "noctalia" ]; }
-      {
-        argv = [
-          "sh"
-          "-c"
-          ''
-            until noctalia msg wallpaper-random; do
-              sleep 0.5
-            done
-          ''
-        ];
-      }
     ];
 
     # Restore the classic 10 persistent workspaces (1..10, Mod+0 = the 10th).

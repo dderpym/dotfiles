@@ -14,14 +14,17 @@ in
     # → lavender, closing on the character, which carries its own notch pair
     # (see character.* below) so the prompt reads "… ❯  ".
     format = builtins.concatStringsSep "" [
-  "[](bg:red)$os$username"
-  "[](fg:prev_bg bg:peach)$directory"
-  "[](fg:prev_bg bg:yellow)$git_branch$git_status"
-  "[](fg:prev_bg bg:green)$c$rust$golang$nodejs$bun$php$java$kotlin$haskell$python"
-  "[](fg:prev_bg bg:sapphire)$conda"
-  "[](fg:prev_bg bg:lavender)$cmd_duration"
-  "$character"
-];
+      "$os$username"
+      "[](fg:prev_bg bg:peach)$directory"
+      "[](fg:prev_bg bg:yellow)$git_branch$git_status"
+      "$character"
+    ];
+
+    right_format = builtins.concatStringsSep "" [
+      "$nodejs$bun$python$rust$golang$php$java$kotlin$haskell"
+      "[](fg:prev_bg bg:sapphire)$conda"
+      "[](fg:prev_bg bg:lavender)$cmd_duration"
+    ];
 
 
     palette = "catppuccin_mocha";

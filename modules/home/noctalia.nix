@@ -101,13 +101,21 @@ let
         icon_color = "tertiary";
         show_label = false;
         capsule_border = "tertiary";
-        actions = { middle = "exec pwvucontrol || pavucontrol"; };
+        actions = {
+          # small popup under the widget (stoletop/micropanels) instead of the
+          # full control center; scroll keeps its default volume ramp
+          left = "panel-toggle stoletop/micropanels:volume";
+          middle = "exec pwvucontrol || pavucontrol";
+        };
       };
 
       brightness = {
         icon_color = "secondary";
         show_label = false;
         capsule_border = "secondary";
+        actions = {
+          left = "panel-toggle stoletop/micropanels:brightness";
+        };
       };
 
       battery = {
@@ -126,6 +134,8 @@ let
         stat = "cpu_usage";
         font_family = "monospace";
         icon_color = "primary";
+        # all three sysmon members open the 3-graph system popup
+        actions = { left = "panel-toggle stoletop/micropanels:system"; };
       };
 
       ram = {
@@ -133,6 +143,7 @@ let
         stat = "ram_used";
         font_family = "monospace";
         icon_color = "secondary";
+        actions = { left = "panel-toggle stoletop/micropanels:system"; };
       };
 
       temp = {
@@ -140,6 +151,7 @@ let
         stat = "cpu_temp";
         font_family = "monospace";
         icon_color = "tertiary";
+        actions = { left = "panel-toggle stoletop/micropanels:system"; };
       };
 
       clock = {
@@ -199,7 +211,17 @@ let
 
       panel = {
         session_placement = "floating";
-        session_position = "center";
+        # "auto" + open_near_click_* make panels open right under the widget
+        # that opened them (the bar is top, so that means just below it)
+        # instead of centered on screen. open_near_click is ignored when a
+        # floating panel pins a fixed position, hence position = "auto".
+        session_position = "auto";
+        open_near_click_control_center = true;
+        open_near_click_session = true;
+        open_near_click_clipboard = true;
+        # launcher is opened from a keybind, not the bar: keep it centered
+        launcher_placement = "floating";
+        launcher_position = "center";
         # keep the outline on floating panels so square cards read as blocks
         borders = true;
       };
@@ -331,9 +353,65 @@ let
     # --- CONTROL CENTER ---
     control_center = {
       sidebar = "compact";
-      sidebar_section = "compact";
-      hidden_tabs = [ "monitor" ];
+      # opens that jump straight to a tab (notifications, power, network,
+      # media bar widgets, `msg panel-toggle control-center <tab>`) drop the
+      # sidebar entirely so they read as small panels, not the full center
+      sidebar_section = "none";
+      hidden_tabs = [ "monitor" ]; # brightness has its own popup now
+      width = 600; # slimmest allowed; no-sidebar opens scale down from it
       calendar = { show_week_numbers = false; };
+    };
+
+    # --- PLUGINS ---
+    plugins = {
+      # Local Luau plugin (pkgs/noctalia-plugins): compact popups for volume /
+      # brightness / system graphs that open under their bar widget.
+      #
+      # The whole dir is symlinked to ~/.local/share/noctalia/plugins (the
+      # "local" path source) by the home.file below. The other two sources are
+      # listed explicitly because setting plugins.source replaces the schema
+      # defaults (official + community) instead of merging with them. This
+      # beta.7 build discovers plugins via catalog.toml at each source root.
+      enabled = [ "stoletop/micropanels" ];
+      source = [
+        {
+          name = "official";
+          kind = "git";
+          location = "https://github.com/noctalia-dev/official-plugins";
+          enabled = true;
+        }
+        {
+          name = "community";
+          kind = "git";
+          location = "https://github.com/noctalia-dev/community-plugins";
+          enabled = true;
+        }
+        {
+          name = "local";
+          kind = "path";
+          location = "${config.home.homeDirectory}/.local/share/noctalia/plugins";
+          enabled = true;
+        }
+      ];
+    };
+
+    # --- HOOKS ---
+    hooks = {
+      # The daemon's plugin enable state lives in ~/.local/state/noctalia/
+      # settings.toml (written by the `plugins enable` IPC) — the
+      # [plugins].enabled list above is NOT consulted at startup (verified:
+      # with the list present, a clean restart left the plugin off). So
+      # re-assert the enable on every shell start: idempotent, and the flake
+      # stays the source of truth even if the state file is reset.
+      #
+      # wallpaper-random used to be a niri spawn loop (retry until the IPC
+      # socket was up); the started hook fires after IPC is ready, so the
+      # retry loop is unnecessary here. Random wallpaper each boot, owned by
+      # noctalia itself.
+      started = [
+        "noctalia msg plugins enable stoletop/micropanels"
+        "noctalia msg wallpaper-random"
+      ];
     };
 
     # --- SYSTEM MONITOR (traffic-light thresholds carried over from v4) ---
@@ -403,4 +481,21 @@ in
   xdg.configFile."noctalia/palettes/Catppuccin-Traffic.json" = {
     text = builtins.toJSON (import ./palettes/catppuccin-traffic.nix);
   };
+
+  # Local Luau plugin with the compact popups (volume / brightness / system
+  # graphs). Single symlink of the whole source dir — which is also the
+  # "local" path source location declared in [plugins].source above — so the
+  # plugin files and its catalog.toml travel together.
+  home.file.".local/share/noctalia/plugins" = {
+    source = ../../pkgs/noctalia-plugins;
+  };
+
+  # Heal the plugin enable state at switch time too (see hooks.started above):
+  # the enable lives in the daemon's state file, so run the same idempotent
+  # enable after activation — a state reset is fixed immediately instead of
+  # waiting for the next noctalia start. Absolute path: the activation env
+  # may not have the user profile on PATH.
+  home.activation.ensureMicropanels = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    ${config.home.profileDirectory}/bin/noctalia msg plugins enable stoletop/micropanels >/dev/null 2>&1 || true
+  '';
 }

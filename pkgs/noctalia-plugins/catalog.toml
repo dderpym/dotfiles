@@ -1,0 +1,19 @@
+# Noctalia plugins catalog for the local source.
+#
+# This beta.7 build discovers plugins through this catalog (one [[plugin]] row
+# per plugin subdirectory at the source root), not by scanning directories.
+# The per-plugin plugin.toml stays authoritative — the host re-reads it on
+# enable. Kept in sync with pkgs/noctalia-plugins/micropanels/.
+
+[[plugin]]
+id = "stoletop/micropanels"
+name = "Micro Panels"
+version = "1.0.0"
+updated_at = 1786122526
+added_at = 1786122526
+author = "stoletop"
+license = "MIT"
+icon = "adjustments"
+description = "Compact popups that open under their bar widget: volume, brightness, and live system graphs."
+plugin_api = 12
+tags = ["utility"]

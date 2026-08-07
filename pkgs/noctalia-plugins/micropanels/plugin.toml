@@ -1,0 +1,48 @@
+# Compact under-widget popups for the noctalia bar.
+#
+# Three small floating panels that open right below the bar widget that
+# toggled them (open_near_click = true), instead of the full control center:
+#
+#   volumen       - slider + mute for the default audio sink
+#   brightness    - slider for the sysfs backlight
+#   system        - live CPU / RAM / temperature sparkline graphs
+#
+# The bar widgets in modules/home/noctalia.nix bind their left-click to
+# `panel-toggle stoletop/micropanels:<id>`; everything here is plain built-in
+# plugin API (no settings, no translations needed).
+
+id = "stoletop/micropanels"
+name = "Micro Panels"
+version = "1.0.0"
+plugin_api = 12 # noctalia.systemStats() needs 12; function callbacks need 9
+license = "MIT"
+description = "Compact popups that open under their bar widget: volume, brightness, and live system graphs."
+
+[[panel]]
+id = "volume"
+entry = "volume.luau"
+width = 250
+height = 148
+# floating + auto + open_near_click: the popup sits just under the widget
+# (shell.panel.floating_offset applies), never centered on screen.
+placement = "floating"
+position = "auto"
+open_near_click = true
+
+[[panel]]
+id = "brightness"
+entry = "brightness.luau"
+width = 250
+height = 110
+placement = "floating"
+position = "auto"
+open_near_click = true
+
+[[panel]]
+id = "system"
+entry = "system.luau"
+width = 300
+height = 164
+placement = "floating"
+position = "auto"
+open_near_click = true

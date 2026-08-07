@@ -22,7 +22,7 @@ let
   cfg = config.programs.flyline;
 
   # Package from the flake input (nixpkgs follows'd to 26.05 by the parent).
-  flylinePkg = inputs.flyline.packages.${pkgs.system}.default;
+  flylinePkg = inputs.flyline.packages.${pkgs.stdenv.hostPlatform.system}.default;
 in {
   options.programs.flyline = {
     enable = mkEnableOption "flyline, a modern command-line replacement for Bash";
@@ -30,7 +30,7 @@ in {
     package = mkOption {
       type = types.package;
       default = flylinePkg;
-      defaultText = "inputs.flyline.packages.${pkgs.system}.default";
+      defaultText = "inputs.flyline.packages.${pkgs.stdenv.hostPlatform.system}.default";
       description = ''
         The flyline package to use. Defaults to the package from the flake's
         `flyline` input; override this once flyline is packaged in nixpkgs

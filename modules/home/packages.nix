@@ -3,6 +3,7 @@
 {
   home.packages = with pkgs; [
     unstable.noctalia
+    xwayland-satellite
 
     cosmic-files
     cosmic-settings

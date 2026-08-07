@@ -32,6 +32,24 @@ in
       { argv = [ "noctalia" ]; }
     ];
 
+    # Restore the classic 10 persistent workspaces (1..10, Mod+0 = the 10th).
+    # Named workspaces always exist even when empty; the focus-workspace binds
+    # above are 1-based indices into the workspace list, so declaration order
+    # is what matters, not the names. Keys are zero-padded because niri-flake
+    # renders attrs in lexicographic key order ("10" would sort right after "1").
+    workspaces = {
+      "01" = { name = "1"; };
+      "02" = { name = "2"; };
+      "03" = { name = "3"; };
+      "04" = { name = "4"; };
+      "05" = { name = "5"; };
+      "06" = { name = "6"; };
+      "07" = { name = "7"; };
+      "08" = { name = "8"; };
+      "09" = { name = "9"; };
+      "10" = { name = "10"; };
+    };
+
     input = {
       keyboard = {
         repeat-delay = 400;

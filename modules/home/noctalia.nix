@@ -369,14 +369,12 @@ let
 
     wallpaper = {
       enabled = true;
-      directory = "/home/stoler/Pictures/Wallpapers";
+      directory = "/home/stoler/Wallpapers";
       fill_mode = "crop";
       fill_color = "#1e1e2e";
       transition = [ "fade" "wipe" "disc" "stripes" "honeycomb" ];
       transition_duration = 1500;
-      # v4 skipStartupTransition = false → animate the first wallpaper at startup
       transition_on_startup = true;
-      edge_smoothness = 0.05;
 
       automation = {
         enabled = false;

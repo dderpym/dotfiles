@@ -8,13 +8,6 @@ let
             blur false
         }
     }
-
-    layer-rule {
-        match namespace="noctalia-attached-panel"
-        background-effect {
-            blur false
-        }
-    }
   '';
 
   niriConfig = config.programs.niri.finalConfig + "\n" + noctaliaRules;

@@ -1,7 +1,8 @@
 { ... }:
 
 {
-  # Input devices, audio, power — the physical-machine services.
+  hardware.bluetooth.enable = true;
+
   services.libinput.enable = true;
 
   services.pipewire = {

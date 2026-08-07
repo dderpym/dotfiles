@@ -1,16 +1,23 @@
 { config, lib, pkgs, ... }:
 
 let
-  barNoBlurRule = ''
+  noctaliaRules = ''
     layer-rule {
         match namespace="noctalia-bar-default"
         background-effect {
             blur false
         }
     }
+
+    layer-rule {
+        match namespace="noctalia-attached-panel"
+        background-effect {
+            blur false
+        }
+    }
   '';
 
-  niriConfig = config.programs.niri.finalConfig + "\n" + barNoBlurRule;
+  niriConfig = config.programs.niri.finalConfig + "\n" + noctaliaRules;
   validatedNiriConfig = pkgs.runCommand "niri-config.kdl" {
     inherit niriConfig;
     passAsFile = [ "niriConfig" ];
@@ -30,6 +37,17 @@ in
   programs.niri.settings = {
     spawn-at-startup = [
       { argv = [ "noctalia" ]; }
+      {
+        argv = [
+          "sh"
+          "-c"
+          ''
+            until noctalia msg wallpaper-random; do
+              sleep 0.5
+            done
+          ''
+        ];
+      }
     ];
 
     # Restore the classic 10 persistent workspaces (1..10, Mod+0 = the 10th).

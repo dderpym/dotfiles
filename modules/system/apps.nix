@@ -15,6 +15,63 @@
   # CONTAINERS
   virtualisation.docker.enable = true;
 
+  # NIX COMPATIBILITY LAYERS
+  services.envfs.enable = true;
+  programs.nix-ld = {
+    enable = true;
+    libraries = with pkgs; [
+      # Core System & Basics
+      stdenv.cc.cc
+      zlib
+      glibc
+      util-linux
+      
+      # Web & Crypto
+      openssl
+      curl
+      libkrb5
+      
+      # Common UI/App Runtimes (.NET, Electron, Node, Python)
+      icu
+      glib
+      dbus
+      atk
+      pango
+      cairo
+      gdk-pixbuf
+      gtk3
+      libdrm
+      mesa
+      alsa-lib
+      nspr
+      nss
+      libsecret
+      systemd
+      
+      # Graphics, Fonts & Window Managers (X11 / Wayland)
+      fontconfig
+      freetype
+      libGL
+      vulkan-loader
+      wayland
+      libxkbcommon
+      libice
+      libsm
+      libx11
+      libxcomposite
+      libxcursor
+      libxdamage
+      libxext
+      libxfixes
+      libxi
+      libxrandr
+      libxrender
+      libxtst
+      libxscrnsaver
+      libvlc
+    ];
+  };
+
   # PROGRAMS
   programs.firefox.enable = true;
   programs.chromium.enable = true;

@@ -63,6 +63,14 @@
       url = "github:nixos/nixpkgs/nixos-unstable";
     };
 
+    # nix-alien runs unpatched binaries inside a FHS env. It must keep its own
+    # nixpkgs + nix-index-database: the package embeds its locked nixpkgs rev
+    # into the generated FHS env and pairs it with the nix-index-database db
+    # that nix-locate queries. Upstream explicitly says overriding these inputs
+    # is unsupported ("may cause mismatches... causing possibly incorrect
+    # results"), so do NOT add follows here.
+    nix-alien.url = "github:thiagokokada/nix-alien";
+
     # llm-agents provides the pi package (and agent-browser). It keeps its own
     # nixpkgs (unstable) on purpose: numtide's binary cache
     # (cache.numtide.com) builds against it, so pi/rtk/agent-browser hit the

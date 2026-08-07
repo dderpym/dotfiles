@@ -3,7 +3,7 @@
 {
   users.users.stoler = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" "docker" ];
+    extraGroups = [ "wheel" "networkmanager" "docker" "input" ];
   };
 
   home-manager.users.stoler = { pkgs, lib, inputs, unstable, ... }: {

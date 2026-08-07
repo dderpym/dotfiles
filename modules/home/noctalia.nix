@@ -38,7 +38,7 @@ let
       capsule_opacity = 1;
       capsule_radius = 0;
       capsule_border = "outline";
-      start = [ "control-center" "active_window" "media" ];
+      start = [ "control-center" "bongocat" "active_window" "media" ];
       center = [ "workspaces" ];
       end = [
         "tray"
@@ -55,7 +55,7 @@ let
       capsule_group = [
         {
           id = "sysmon";
-          members = [ "cpu" "ram" "temp" ];
+          members = [ "cat" "ram" "temp" ];
           # square shared capsule; primary border matches the control-center
           # accent, members carry their own icon colors below
           radius = 0;
@@ -91,10 +91,13 @@ let
 
       tray = { drawer = true; };
 
-      # accent: the entry point to the shell
-      "control-center" = {
-        icon_color = "primary";
-        capsule_border = "primary";
+      bongocat = {
+        type = "noctalia/bongocat:cat";
+        input_devices = [ "/dev/input/by-path/platform-i8042-serio-0-event-kbd" ];
+        executable_path = "evtest";
+        audio_spectrum = true;
+        tappy_mode = true;
+        rave_mode=true;
       };
 
       volume = {
@@ -102,8 +105,6 @@ let
         show_label = false;
         capsule_border = "tertiary";
         actions = {
-          # small popup under the widget (stoletop/micropanels) instead of the
-          # full control center; scroll keeps its default volume ramp
           left = "panel-toggle stoletop/micropanels:volume";
           middle = "exec pwvucontrol || pavucontrol";
         };
@@ -129,20 +130,25 @@ let
         capsule_border = "error";
       };
 
-      cpu = {
-        type = "sysmon";
-        stat = "cpu_usage";
-        font_family = "monospace";
-        icon_color = "primary";
-        # all three sysmon members open the 3-graph system popup
-        actions = { left = "panel-toggle stoletop/micropanels:system"; };
+      # replaces the cpu sysmon widget: CPU load as a running cat (pace tracks
+      # load, % readout on the right; click opens its own panel — the same cat
+      # at panel size with the CPU percentage). Custom color = the palette
+      # primary (mauve) the cpu icon used, so the group keeps its
+      # primary/secondary/tertiary role mapping — theme mode would give
+      # secondary (peach), clashing with ram.
+      cat = {
+        type = "dotnetrob/cat:cat";
+        show_cpu_percent = true;
+        cat_color_mode = "custom";
+        cat_color = "#cba6f7";
       };
 
       ram = {
         type = "sysmon";
         stat = "ram_used";
         font_family = "monospace";
-        icon_color = "secondary";
+        color = "secondary";
+
         actions = { left = "panel-toggle stoletop/micropanels:system"; };
       };
 
@@ -150,7 +156,7 @@ let
         type = "sysmon";
         stat = "cpu_temp";
         font_family = "monospace";
-        icon_color = "tertiary";
+        color = "tertiary";
         actions = { left = "panel-toggle stoletop/micropanels:system"; };
       };
 
@@ -373,7 +379,10 @@ let
 
     # --- PLUGINS ---
     plugins = {
-      # Local Luau plugin (pkgs/noctalia-plugins): compact popups for volume /
+      # noctalia/bongocat (official source): the typing cat bar widget that
+      # replaced the control-center icon. dotnetrob/cat (community source): the
+      # animated CPU cat bar widget that replaced the cpu sysmon widget. Local
+      # Luau plugin (pkgs/noctalia-plugins): compact popups for volume /
       # brightness / system graphs that open under their bar widget.
       #
       # The whole dir is symlinked to ~/.local/share/noctalia/plugins (the
@@ -381,7 +390,7 @@ let
       # listed explicitly because setting plugins.source replaces the schema
       # defaults (official + community) instead of merging with them. This
       # beta.7 build discovers plugins via catalog.toml at each source root.
-      enabled = [ "stoletop/micropanels" ];
+      enabled = [ "noctalia/bongocat" "dotnetrob/cat" "stoletop/micropanels" ];
       source = [
         {
           name = "official";
@@ -418,6 +427,8 @@ let
       # retry loop is unnecessary here. Random wallpaper each boot, owned by
       # noctalia itself.
       started = [
+        "noctalia msg plugins enable noctalia/bongocat"
+        "noctalia msg plugins enable dotnetrob/cat"
         "noctalia msg plugins enable stoletop/micropanels"
         "noctalia msg wallpaper-random"
       ];
@@ -501,10 +512,12 @@ in
 
   # Heal the plugin enable state at switch time too (see hooks.started above):
   # the enable lives in the daemon's state file, so run the same idempotent
-  # enable after activation — a state reset is fixed immediately instead of
+  # enables after activation — a state reset is fixed immediately instead of
   # waiting for the next noctalia start. Absolute path: the activation env
   # may not have the user profile on PATH.
-  home.activation.ensureMicropanels = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+  home.activation.ensurePlugins = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    ${config.home.profileDirectory}/bin/noctalia msg plugins enable noctalia/bongocat >/dev/null 2>&1 || true
+    ${config.home.profileDirectory}/bin/noctalia msg plugins enable dotnetrob/cat >/dev/null 2>&1 || true
     ${config.home.profileDirectory}/bin/noctalia msg plugins enable stoletop/micropanels >/dev/null 2>&1 || true
   '';
 }

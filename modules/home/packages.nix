@@ -24,6 +24,10 @@
     # media & system keys (niri binds in niri.nix)
     playerctl
     brightnessctl
+    pavucontrol
+
+    # noctalia bongocat bar widget reads /dev/input via evtest
+    evtest
 
     grim
     slurp

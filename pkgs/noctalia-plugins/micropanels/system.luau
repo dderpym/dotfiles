@@ -1,6 +1,6 @@
 --!nonstrict
 -- Live system graphs: CPU, RAM and CPU temperature sparklines, opened from the
--- bar's sysmon group (cpu / ram / temp widgets).
+-- bar's sysmon group (ram / temp widgets — the cat widget opens its own panel).
 --
 -- Fed by the shell's own system monitor (noctalia.systemStats()) — the same
 -- sample the bar widgets and the control center System tab use, so no extra

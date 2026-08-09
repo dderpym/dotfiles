@@ -3,6 +3,7 @@
 {
   home.packages = with pkgs; [
     unstable.noctalia
+    pkgs.wl-clipboard
     xwayland-satellite
 
     # flake-only package (not in nixpkgs); keep its own nixpkgs, see flake.nix

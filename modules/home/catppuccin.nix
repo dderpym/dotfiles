@@ -18,4 +18,10 @@
     ${pkgs.cosmic-settings}/bin/cosmic-settings appearance import \
       ${inputs.catppuccin-cosmic}/themes/cosmic-settings/catppuccin-mocha-blue+round.ron
   '';
+
+  catppuccin.cursors = {
+    enable = true;
+    flavor = "mocha";
+    accent = "blue";
+  };
 }

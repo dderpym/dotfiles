@@ -7,7 +7,7 @@
     xwayland-satellite
 
     # flake-only package (not in nixpkgs); keep its own nixpkgs, see flake.nix
-    inputs.nix-alien.packages.${pkgs.system}.nix-alien
+    inputs.nix-alien.packages.${pkgs.stdenv.hostPlatform.system}.nix-alien
 
     cosmic-files
     cosmic-settings

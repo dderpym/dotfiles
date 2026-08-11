@@ -12,7 +12,7 @@
     enable = true;
     agentModeCommand = ''
       flyline set-agent-mode \
-        --system-prompt "Be concise. Answer with a JSON array of at most 3 items with objects containing: command and description. Command will be a Bash command." \
+        --system-prompt "Be concise. Answer with a JSON array of at most 3 items with objects containing: command and description. Command will be a Bash command. As you are on nix-os, you may prefix possibly uninstalled binaries with , to have nix automatically intsall it." \
         --trigger-prefix ': ' \
         --command 'pi -p --no-session'
     '';

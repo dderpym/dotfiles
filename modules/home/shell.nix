@@ -26,4 +26,12 @@
   };
 
   programs.lazygit.enable = true;
+
+  # direnv with nix-direnv: `use nix` gets a persistent, cached dev shell
+  # (reloads are near-instant after the first build) instead of re-evaluating
+  # every time the directory changes.
+  programs.direnv = {
+    enable = true;
+    nix-direnv.enable = true;
+  };
 }

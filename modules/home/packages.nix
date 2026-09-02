@@ -27,5 +27,13 @@
 
     btop
     evtest
+
+    python3
+    unzip
+    wget
+    curl
+    gnutar
+
+    udiskie
   ];
 }

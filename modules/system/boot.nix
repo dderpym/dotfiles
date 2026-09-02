@@ -1,17 +1,21 @@
-{ ... }:
+{ lib, ... }:
 
 {
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.systemd-boot.configurationLimit = 5;
-  boot.loader.efi.canTouchEfiVariables = true;
+  # Lanzaboote replaces systemd-boot: it signs the kernel, initrd and boot
+  # loader with the db key and installs UKIs + its own systemd-boot loader
+  # entries. systemd-boot must stay disabled (docs force it off).
+  boot.loader.systemd-boot.enable = lib.mkForce false;
 
-  # Arch Linux is installed on the same disk — expose its kernel in the boot menu.
-  boot.loader.systemd-boot.extraEntries = {
-    "arch.conf" = ''
-      title Arch Linux
-      linux /vmlinuz-linux
-      initrd /initramfs-linux.img
-      options root=UUID=f856667a-cb82-4eef-91f7-8f2c2329440b rw
-    '';
+  boot.lanzaboote = {
+    enable = true;
+    # sbctl key bundle (created with `sudo sbctl create-keys`): keys/ + GUID.
+    # lzbt reads db.pem/db.key from here at switch time to sign the ESP
+    # artifacts. NOTE: this machine dual-boots Windows (BitLocker), so enroll
+    # the Microsoft keys too when enabling Secure Boot:
+    #   sudo sbctl enroll-keys --microsoft
+    pkiBundle = "/var/lib/sbctl";
+    configurationLimit = 5;
   };
+
+  boot.loader.efi.canTouchEfiVariables = true;
 }

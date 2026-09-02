@@ -325,6 +325,8 @@
     usbutils
     lm_sensors
     efibootmgr
+    # Secure Boot key management + verification (sbctl status / verify / enroll-keys)
+    sbctl
     git
     nano
     curl

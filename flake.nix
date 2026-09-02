@@ -24,6 +24,14 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Secure Boot via signed UKIs. No per-release branches — pin the stable
+    # release tag. nixpkgs follows so lzbt/stub build against our nixos-26.05
+    # instead of dragging in their own nixpkgs.
+    lanzaboote = {
+      url = "github:nix-community/lanzaboote/v1.1.0";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     catppuccin = {
       url = "github:catppuccin/nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -91,7 +99,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, lanzaboote, ... }@inputs:
     let
       system = "x86_64-linux";
       # packages that only exist on unstable (noctalia); see input comment above
@@ -104,6 +112,8 @@
           specialArgs = { inherit inputs unstable; };
           modules = [
             ./configuration.nix
+
+            lanzaboote.nixosModules.lanzaboote
 
             home-manager.nixosModules.home-manager
             {

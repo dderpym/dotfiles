@@ -11,6 +11,7 @@
     ./modules/system/drkonqi.nix # masks drkonqi-coredump-launcher crash loop; delete once drkonqi ≥ 6.7.2
     ./modules/system/locale.nix
     ./modules/system/apps.nix
+    ./modules/system/virtualisation.nix
     ./modules/home/default.nix
   ];
 

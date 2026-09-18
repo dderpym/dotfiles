@@ -9,7 +9,10 @@
 # systemd does not rate-limit) — a self-sustaining loop until the session dies.
 # On this machine every logout produced 13–15 launcher cores (28 total in
 # /var/lib/systemd/coredump), triggered by xdg-desktop-portal-cosmic panicking
-# on the dead wayland socket (pop-os/xdg-desktop-portal-cosmic#282).
+# on the dead wayland socket (pop-os/xdg-desktop-portal-cosmic#282). That
+# portal has since been dropped (nemo replaced cosmic-files), so the *observed*
+# trigger is gone — but the launcher loop is a drkonqi bug that fires on any
+# user core, so the mask stays until we ship drkonqi ≥ 6.7.2.
 #
 # Why this module exists: the loop is fixed upstream in drkonqi commit
 # b2971200 ("don't start launcher when not in a graphical session", 2026-07-10),

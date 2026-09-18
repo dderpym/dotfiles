@@ -20,6 +20,7 @@
       ./niri.nix
       ./noctalia.nix
       ./mimeapps.nix
+      ./nemo.nix
       ./pi.nix
     ];
 

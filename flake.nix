@@ -37,11 +37,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    catppuccin-cosmic = {
-      url = "github:catppuccin/cosmic-desktop";
-      flake = false;
-    };
-
     niri-flake = {
       url = "github:sodiboo/niri-flake";
       inputs.nixpkgs.follows = "nixpkgs";

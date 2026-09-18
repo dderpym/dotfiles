@@ -7,8 +7,9 @@
   xdg.mimeApps.enable = true;
 
   xdg.mimeApps.defaultApplications = {
-    # Directories → COSMIC Files
-    "inode/directory" = [ "com.system76.CosmicFiles.desktop" ];
+    # Directories → nemo
+    "inode/directory" = [ "nemo.desktop" ];
+    "application/x-gnome-saved-search" = [ "nemo.desktop" ];
 
     # Text & source files → neovim. nvim.desktop ships with the neovim
     # package (Terminal=true), so files open in kitty + nvim.

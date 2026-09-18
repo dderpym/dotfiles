@@ -194,8 +194,8 @@ in
         action.spawn = "firefox";
       };
       "Mod+F" = {
-        hotkey-overlay.title = "Open file browser: cosmic-files";
-        action.spawn = "cosmic-files";
+        hotkey-overlay.title = "Open file browser: nemo";
+        action.spawn = "nemo";
       };
       "Super+Alt+L" = {
         hotkey-overlay.title = "Lock the Screen: noctalia";

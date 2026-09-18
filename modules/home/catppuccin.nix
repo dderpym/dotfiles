@@ -1,4 +1,4 @@
-{ pkgs, lib, inputs, ... }:
+{ ... }:
 
 {
   catppuccin = {
@@ -8,16 +8,12 @@
     accent = "blue";
   };
 
-  # COSMIC icon theme — Catppuccin Papirus folders already installed above;
-  # this picks the Papirus-Dark icon set for cosmic-files.
-  home.file.".config/cosmic/com.system76.CosmicTk/v1/icon_theme".text = ''
-    "Papirus-Dark"
-  '';
-
-  home.activation.catppuccinCosmicTheme = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    ${pkgs.cosmic-settings}/bin/cosmic-settings appearance import \
-      ${inputs.catppuccin-cosmic}/themes/cosmic-settings/catppuccin-mocha-blue+round.ron
-  '';
+  # autoEnable turns on catppuccin.gtk.icon, which sets gtk.iconTheme to
+  # Papirus-Dark (backed by catppuccin-papirus-folders). Enabling home-manager's
+  # gtk module is what actually emits ~/.config/gtk-3.0/settings.ini, so GTK apps
+  # — nemo above all — pick the icons up. Before, only cosmic-files got the theme
+  # (via its own config file); nemo is GTK, so it needs this.
+  gtk.enable = true;
 
   catppuccin.cursors = {
     enable = true;

@@ -28,14 +28,16 @@
     extraPortals = with pkgs; [
       xdg-desktop-portal-gnome # Works smoothly for Niri's screencast portal implementation
       xdg-desktop-portal-gtk
-      xdg-desktop-portal-cosmic # FileChooser portal backed by cosmic-files
     ];
     config = {
       niri = {
         default = [ "gnome" "gtk" ];
-        # Route file pickers to cosmic-files; keep gnome for ScreenCast/
-        # Screenshot (niri implements the GNOME backend natively)
-        "org.freedesktop.impl.portal.FileChooser" = "cosmic";
+        # File dialogs → gtk. nemo is a file *manager*, not a portal backend
+        # (linuxmint/nemo has no FileChooser implementation), so the dialog is
+        # GTK's — which shares ~/.config/gtk-3.0/bookmarks with nemo. Keep
+        # gnome for ScreenCast/Screenshot (niri implements that backend
+        # natively).
+        "org.freedesktop.impl.portal.FileChooser" = "gtk";
       };
     };
   };

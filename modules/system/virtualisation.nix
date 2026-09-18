@@ -24,6 +24,7 @@
   # but virt-manager is grouped here with its daemon since it manages the
   # system libvirtd.
   environment.systemPackages = with pkgs; [
+    passt
     virt-manager # GTK manager: create/start/stop VMs, embedded spice console
     virt-viewer  # standalone console client (remote-viewer), external consoles
   ];

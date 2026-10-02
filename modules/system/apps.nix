@@ -13,7 +13,11 @@
   ];
 
   # CONTAINERS
-  virtualisation.docker.enable = true;
+  virtualisation.docker = {
+    enable = true;
+    # Keep socket activation, but don't start dockerd on every boot.
+    enableOnBoot = false;
+  };
 
   # NIX COMPATIBILITY LAYERS
   services.envfs.enable = true;

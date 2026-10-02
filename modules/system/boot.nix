@@ -18,4 +18,6 @@
   };
 
   boot.loader.efi.canTouchEfiVariables = true;
+  # Keep a tiny menu for Windows fallback; default 5s is pure boot delay.
+  boot.loader.timeout = 1;
 }

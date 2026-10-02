@@ -31,8 +31,8 @@ let
   settingsJson = pkgs.writeText "pi-settings.json" (builtins.toJSON {
     npmCommand = [ "bun" ];
     theme = "dark";
-    defaultProvider = "deepseek";
-    defaultModel = "deepseek-v4-flash";
+    defaultProvider = "openai-codex";
+    defaultModel = "gpt-6.1-sol";
     defaultThinkingLevel = "high";
     packages = [
       "npm:@iiwate/pi-subagents-lite"

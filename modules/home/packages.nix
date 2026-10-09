@@ -17,7 +17,6 @@
     (catppuccin-papirus-folders.override { flavor = "mocha"; accent = "blue"; })
 
     gnumake
-    neovim
     lazydocker
 
     vesktop

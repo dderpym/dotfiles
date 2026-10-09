@@ -453,7 +453,7 @@ let
 
     wallpaper = {
       enabled = true;
-      directory = "/home/stoler/Wallpapers";
+      directory = "${config.home.homeDirectory}/Wallpapers";
       fill_mode = "crop";
       fill_color = "#1e1e2e";
       transition = [ "fade" "wipe" "disc" "stripes" "honeycomb" ];
@@ -477,6 +477,8 @@ let
   '';
 in
 {
+  home.file."Wallpapers/p4g.png".source = ../../assets/wallpapers/p4g.png;
+
   xdg.configFile."noctalia/config.toml" = {
     force = true;
     source = validatedConfigToml;

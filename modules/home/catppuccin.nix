@@ -1,4 +1,4 @@
-{ ... }:
+{ config, pkgs, ... }:
 
 {
   catppuccin = {
@@ -8,12 +8,17 @@
     accent = "blue";
   };
 
-  # autoEnable turns on catppuccin.gtk.icon, which sets gtk.iconTheme to
-  # Papirus-Dark (backed by catppuccin-papirus-folders). Enabling home-manager's
-  # gtk module is what actually emits ~/.config/gtk-3.0/settings.ini, so GTK apps
-  # — nemo above all — pick the icons up. Before, only cosmic-files got the theme
-  # (via its own config file); nemo is GTK, so it needs this.
-  gtk.enable = true;
+  # The Catppuccin module themes GTK icons only; Nemo also needs a GTK theme.
+  gtk = {
+    enable = true;
+    theme = {
+      name = "catppuccin-${config.catppuccin.flavor}-${config.catppuccin.accent}-standard";
+      package = pkgs.catppuccin-gtk.override {
+        variant = config.catppuccin.flavor;
+        accents = [ config.catppuccin.accent ];
+      };
+    };
+  };
 
   catppuccin.cursors = {
     enable = true;

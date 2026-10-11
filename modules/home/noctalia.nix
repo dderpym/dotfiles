@@ -171,6 +171,9 @@ let
     };
 
     shell = {
+      # Native auth prompts inherit our Catppuccin palette without another agent.
+      polkit_agent = true;
+
       # square all shell surfaces (launcher, control center, notifications,
       # OSD, popups) to match the bar; 0 = square, 1 = default
       corner_radius_scale = 0;

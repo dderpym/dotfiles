@@ -17,8 +17,16 @@
     pulse.enable = true;
   };
 
+  services.tlp = {
+    enable = true;
+    # Preserve Noctalia's profile controls without running a competing daemon.
+    pd.enable = true;
+    # Avoid peripherals failing to wake; retain TLP's other power-saving defaults.
+    settings.USB_AUTOSUSPEND = 0;
+  };
+
   services.upower.enable = true;
-  services.power-profiles-daemon.enable = true;
+  services.power-profiles-daemon.enable = false;
   services.logind.settings.Login = {
     HandleLidSwitch = "suspend";
     HandlePowerKey = "poweroff";

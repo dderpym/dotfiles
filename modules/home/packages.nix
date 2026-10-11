@@ -1,6 +1,8 @@
 { pkgs, inputs, unstable, ... }:
 
 {
+  programs.btop.enable = true;
+
   home.packages = with pkgs; [
     unstable.noctalia
     pkgs.wl-clipboard
@@ -27,7 +29,6 @@
     brightnessctl
     pavucontrol
 
-    btop
     evtest
 
     python3

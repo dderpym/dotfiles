@@ -44,7 +44,6 @@ let
       "npm:pi-agent-browser-native"
       "npm:pi-smart-web-search"
       "npm:pi-smart-fetch"
-      "git:https://github.com/crustyhacker/pi-thinking-steps"
     ];
   });
 

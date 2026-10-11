@@ -288,8 +288,8 @@ let
     # --- LOCKSCREEN ---
     lockscreen = {
       enabled = true;
-      # v4 allowPasswordWithFprintd = false
-      fingerprint = false;
+      # Noctalia runs fprintd verification beside the password PAM thread.
+      fingerprint = true;
       # v4 lockScreenBlur = 0 / lockScreenTint = 0
       blur_intensity = 0.0;
       tint_intensity = 0.0;

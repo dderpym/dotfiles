@@ -8,38 +8,55 @@
     [ (modulesPath + "/installer/scan/not-detected.nix")
     ];
 
-  boot.initrd.availableKernelModules = [ "xhci_pci" "nvme" "usbhid" "rtsx_pci_sdmmc" ];
+  boot.initrd.availableKernelModules = [ "xhci_pci" "thunderbolt" "nvme" "uas" "usbhid" "sd_mod" ];
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
 
   fileSystems."/" =
-    { device = "/dev/disk/by-uuid/e7be3cc9-6791-45ae-8360-318bf3515e6d";
+    { device = "/dev/disk/by-uuid/89f724c8-a030-4e95-97c6-9ce1140a977b";
       fsType = "btrfs";
-      options = [ "subvol=@" ];
+      options = [ "subvol=@root,compress=zstd,noatime" ];
+    };
+
+  fileSystems."/home" =
+    { device = "/dev/disk/by-uuid/89f724c8-a030-4e95-97c6-9ce1140a977b";
+      fsType = "btrfs";
+      options = [ "subvol=@home,compress=zstd,relatime" ];
     };
 
   fileSystems."/nix" =
-    { device = "/dev/disk/by-uuid/e7be3cc9-6791-45ae-8360-318bf3515e6d";
+    { device = "/dev/disk/by-uuid/89f724c8-a030-4e95-97c6-9ce1140a977b";
       fsType = "btrfs";
-      options = [ "subvol=@nix" ];
+      options = [ "subvol=@nix,compress=zstd,noatime" ];
+    };
+
+  fileSystems."/.snapshots" =
+    { device = "/dev/disk/by-uuid/89f724c8-a030-4e95-97c6-9ce1140a977b";
+      fsType = "btrfs";
+      options = [ "subvol=@snapshots,compress=zstd,noatime" ];
+    };
+
+  fileSystems."/swap" =
+    { device = "/dev/disk/by-uuid/89f724c8-a030-4e95-97c6-9ce1140a977b";
+      fsType = "btrfs";
+      options = [ "subvol=@swap,noatime" ];
+    };
+
+  fileSystems."/mnt/media" =
+    { device = "/dev/disk/by-uuid/83f00a95-5473-485d-b6c1-6936139c0d79";
+      fsType = "btrfs,compress=zstd,noatime";
     };
 
   fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/8EB6-6D9C";
+    { device = "/dev/disk/by-uuid/545D-74A4";
       fsType = "vfat";
       options = [ "fmask=0022" "dmask=0022" ];
     };
 
-  fileSystems."/home" =
-    { device = "/dev/disk/by-uuid/e69c56c6-f7da-46ac-9b5d-5a69ac8d12f7";
-      fsType = "ext4";
-    };
-
-  swapDevices =
-    [ { device = "/dev/disk/by-uuid/5201bdda-6a6a-433d-8b4f-089386709e1b"; }
-    ];
+  swapDevices = [ ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
+  hardware.cpu.intel.npu.enable = true;
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 }

@@ -21,6 +21,16 @@
     };
   };
 
+  # Reuse the Catppuccin module's Kvantum theme for Qt pinentry.
+  qt = {
+    enable = true;
+    style = {
+      name = "kvantum";
+      # Pinentry uses Qt6; avoid pulling in a second, Qt5 theme stack.
+      package = pkgs.qt6Packages.qtstyleplugin-kvantum;
+    };
+  };
+
   catppuccin.cursors = {
     enable = true;
     flavor = "mocha";

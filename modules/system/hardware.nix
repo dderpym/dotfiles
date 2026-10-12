@@ -7,6 +7,7 @@
   # Noctalia drives fprintd directly for lockscreen fingerprint auth; keep its
   # password PAM path from trying to claim the same reader first.
   security.pam.services.login.fprintAuth = false;
+  security.pam.services.sudo.rules.auth.fprintd.settings.timeout = 10;
 
   services.libinput.enable = true;
 
@@ -29,6 +30,8 @@
   services.power-profiles-daemon.enable = false;
   services.logind.settings.Login = {
     HandleLidSwitch = "suspend";
+    # Also sleep with a dock/external monitor; logind otherwise ignores the lid.
+    HandleLidSwitchDocked = "suspend";
     HandlePowerKey = "poweroff";
   };
 

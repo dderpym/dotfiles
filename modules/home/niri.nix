@@ -51,6 +51,9 @@ in
     };
 
     input = {
+      # Let logind apply HandlePowerKey instead of niri's default suspend.
+      power-key-handling.enable = false;
+
       keyboard = {
         repeat-delay = 400;
         repeat-rate = 25;

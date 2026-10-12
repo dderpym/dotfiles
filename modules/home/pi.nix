@@ -44,6 +44,7 @@ let
       "npm:pi-agent-browser-native"
       "npm:pi-smart-web-search"
       "npm:pi-smart-fetch"
+      "npm:pi-btw"
     ];
   });
 

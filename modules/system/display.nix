@@ -19,9 +19,6 @@
   };
 
   programs.niri.enable = true;
-  # Plasma as a fallback session: niri is niche, so keep a known-good DE
-  # selectable from SDDM in case the compositor breaks.
-  services.desktopManager.plasma6.enable = true;
 
   xdg.portal = {
     enable = true;

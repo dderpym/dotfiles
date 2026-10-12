@@ -41,7 +41,7 @@
     "application/x-yaml" = [ "nvim.desktop" ];
 
     # Documents → zathura (lightweight, vim-style keys; the mupdf backend
-    # also handles epub). okular remains available via plasma6 if needed.
+    # also handles epub).
     "application/pdf" = [ "org.pwmt.zathura.desktop" ];
     "application/epub+zip" = [ "org.pwmt.zathura.desktop" ];
 

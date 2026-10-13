@@ -9,8 +9,4 @@
   services.tailscale.enable = true;
   # Enable Tailscale routing features (server, client, or both)
   services.tailscale.useRoutingFeatures = "both";
-
-  # FUCK CCDC
-  services.netbird.enable = true;
-  networking.firewall.trustedInterfaces = [ "wt0" ];
 }

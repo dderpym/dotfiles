@@ -1,6 +1,9 @@
-{ lib, ... }:
+{ lib, pkgs, ... }:
 
 {
+  # Panther Lake benefits from newer hardware support; follow stable, not LTS.
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+
   # Lanzaboote replaces systemd-boot: it signs the kernel, initrd and boot
   # loader with the db key and installs UKIs + its own systemd-boot loader
   # entries. systemd-boot must stay disabled (docs force it off).

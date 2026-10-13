@@ -32,10 +32,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    catppuccin = {
-      url = "github:catppuccin/nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # Let Catppuccin use its own nixpkgs so Whiskers and themes match its cache.
+    catppuccin.url = "github:catppuccin/nix";
 
     niri-flake = {
       url = "github:sodiboo/niri-flake";

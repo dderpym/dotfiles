@@ -162,6 +162,19 @@ in
         open-floating = true;
       }
 
+      # Pinentry's fixed-size dialog supplies its own spacing; no outer decoration.
+      {
+        matches = [ { app-id = "^org\\.gnupg\\.pinentry-qt$"; } ];
+        open-floating = true;
+        border.enable = false;
+        geometry-corner-radius = {
+          top-left = 0.0;
+          top-right = 0.0;
+          bottom-right = 0.0;
+          bottom-left = 0.0;
+        };
+      }
+
       # noctalia v5 settings window (dev.noctalia.Noctalia) — float it at a
       # fixed size so the settings UI doesn't tile
       {

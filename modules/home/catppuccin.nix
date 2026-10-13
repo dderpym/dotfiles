@@ -21,7 +21,8 @@
     };
   };
 
-  # Reuse the Catppuccin module's Kvantum theme for Qt pinentry.
+  # Keep other Qt apps on upstream Catppuccin; pinentry gets roomier flat controls.
+  catppuccin.kvantum.apply = false;
   qt = {
     enable = true;
     style = {
@@ -29,7 +30,17 @@
       # Pinentry uses Qt6; avoid pulling in a second, Qt5 theme stack.
       package = pkgs.qt6Packages.qtstyleplugin-kvantum;
     };
+    kvantum = {
+      enable = true;
+      settings = {
+        General.theme = "catppuccin-${config.catppuccin.flavor}-${config.catppuccin.accent}";
+        Applications.Pinentry = [ "pinentry" "pinentry-qt" ];
+      };
+    };
   };
+
+  xdg.configFile."Kvantum/Pinentry/Pinentry.kvconfig".source = ../../assets/pinentry/Pinentry.kvconfig;
+  xdg.configFile."Kvantum/Pinentry/Pinentry.svg".source = ../../assets/pinentry/Pinentry.svg;
 
   catppuccin.cursors = {
     enable = true;

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <!-- Cat-lock silhouette inspired by the reference; transparent negative space. -->
+  <path fill="none" stroke="#89b4fa" stroke-width="14" stroke-linecap="square"
+        d="M49 24C61 9 86 9 100 24C114 39 116 63 106 82"/>
+  <defs>
+    <mask id="keyhole">
+      <rect width="128" height="128" fill="white"/>
+      <circle cx="76" cy="85" r="8" fill="black"/>
+      <path d="M73 90H79L83 104H69Z" fill="black"/>
+    </mask>
+  </defs>
+  <path fill="#89b4fa" mask="url(#keyhole)" d="
+    M30 36L40 22Q44 24 43 36L56 43Q60 43 64 49L70 52
+    Q75 59 66 63L57 65Q50 66 55 72Q70 78 104 75
+    Q116 88 111 103L111 122L95 122L95 106Q85 104 79 106
+    L77 122L62 122L60 103L57 122L43 122L40 100
+    Q29 89 29 74Q23 55 30 36Z"/>
+  <path fill="#89b4fa" d="M36 79Q32 93 19 111L27 118Q44 99 47 88Z"/>
+</svg>

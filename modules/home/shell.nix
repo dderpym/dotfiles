@@ -2,6 +2,7 @@
 {
   programs.bash = {
     enable = true;
+    shellAliases.ssh = "kitten ssh";
     initExtra = ''
       # hacky workaround to get starship to init before kitty
       eval "$(${pkgs.starship}/bin/starship init bash)"

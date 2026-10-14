@@ -6,6 +6,7 @@
   home.packages = with pkgs; [
     unstable.noctalia
     pkgs.wl-clipboard
+    (import ../../pkgs/niri-shot.nix { inherit pkgs; })
     xwayland-satellite
 
     # flake-only package (not in nixpkgs); keep its own nixpkgs, see flake.nix

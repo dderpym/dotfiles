@@ -25,6 +25,10 @@
     vesktop
     slack
     prismlauncher
+    lutris
+
+    wineWow64Packages.stable
+    winetricks
 
     playerctl
     brightnessctl

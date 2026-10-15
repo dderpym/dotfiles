@@ -1,4 +1,4 @@
-{ ... }:
+{ config, unstable, ... }:
 
 {
   hardware.bluetooth.enable = true;
@@ -20,10 +20,18 @@
 
   services.tlp = {
     enable = true;
+    # TLP 1.10 adds configurable automatic AC/battery profile selection.
+    package = unstable.tlp.override { enableRDW = config.networking.networkmanager.enable; };
     # Preserve Noctalia's profile controls without running a competing daemon.
     pd.enable = true;
-    # Avoid peripherals failing to wake; retain TLP's other power-saving defaults.
-    settings.USB_AUTOSUSPEND = 0;
+    pd.package = unstable.tlp-pd;
+    settings = {
+      TLP_AUTO_SWITCH = 1;
+      TLP_PROFILE_AC = "PRF";
+      TLP_PROFILE_BAT = "SAV";
+      # Avoid peripherals failing to wake; retain TLP's other power-saving defaults.
+      USB_AUTOSUSPEND = 0;
+    };
   };
 
   services.upower.enable = true;

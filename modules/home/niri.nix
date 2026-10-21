@@ -205,6 +205,10 @@ in
         # noctalia's launcher via IPC (wofi was removed from the stack)
         action.spawn = [ "noctalia" "msg" "panel-toggle" "launcher" ];
       };
+      "Mod+V" = {
+        hotkey-overlay.title = "Open Clipboard History: noctalia";
+        action.spawn = [ "noctalia" "msg" "panel-toggle" "clipboard" ];
+      };
       "Mod+W" = {
         hotkey-overlay.title = "Open a browser: firefox";
         action.spawn = "firefox";

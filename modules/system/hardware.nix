@@ -1,4 +1,4 @@
-{ config, unstable, ... }:
+{ config, pkgs, ... }:
 
 {
   hardware.bluetooth.enable = true;
@@ -18,24 +18,32 @@
     pulse.enable = true;
   };
 
-  services.tlp = {
-    enable = true;
-    # TLP 1.10 adds configurable automatic AC/battery profile selection.
-    package = unstable.tlp.override { enableRDW = config.networking.networkmanager.enable; };
-    # Preserve Noctalia's profile controls without running a competing daemon.
-    pd.enable = true;
-    pd.package = unstable.tlp-pd;
-    settings = {
-      TLP_AUTO_SWITCH = 1;
-      TLP_PROFILE_AC = "PRF";
-      TLP_PROFILE_BAT = "SAV";
-      # Avoid peripherals failing to wake; retain TLP's other power-saving defaults.
-      USB_AUTOSUSPEND = 0;
-    };
+  services.upower.enable = true;
+  services.power-profiles-daemon.enable = true;
+
+  # Use a service rather than running the D-Bus client inside udev.
+  services.udev.extraRules = ''
+    SUBSYSTEM=="power_supply", ACTION=="change", ENV{POWER_SUPPLY_ONLINE}=="[01]", RUN+="${pkgs.systemd}/bin/systemctl --no-block restart power-profile-auto.service"
+  '';
+  systemd.services.power-profile-auto = {
+    description = "Select power profile for the current power source";
+    wantedBy = [ "multi-user.target" ];
+    requires = [ "power-profiles-daemon.service" ];
+    after = [ "power-profiles-daemon.service" ];
+    unitConfig.StartLimitIntervalSec = 0;
+    serviceConfig.Type = "oneshot";
+    script = ''
+      profile=power-saver
+      for online in /sys/class/power_supply/*/online; do
+        if [[ -r "$online" && "$(< "$online")" == 1 ]]; then
+          profile=performance
+          break
+        fi
+      done
+      ${config.services.power-profiles-daemon.package}/bin/powerprofilesctl set "$profile"
+    '';
   };
 
-  services.upower.enable = true;
-  services.power-profiles-daemon.enable = false;
   services.logind.settings.Login = {
     HandleLidSwitch = "suspend";
     # Also sleep with a dock/external monitor; logind otherwise ignores the lid.

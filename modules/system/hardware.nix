@@ -27,7 +27,8 @@
   '';
   systemd.services.power-profile-auto = {
     description = "Select power profile for the current power source";
-    wantedBy = [ "multi-user.target" ];
+    # The daemon starts after multi-user.target; avoid ordering this before it.
+    wantedBy = [ "graphical.target" ];
     requires = [ "power-profiles-daemon.service" ];
     after = [ "power-profiles-daemon.service" ];
     unitConfig.StartLimitIntervalSec = 0;

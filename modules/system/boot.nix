@@ -1,6 +1,8 @@
 { lib, pkgs, ... }:
 
 {
+  boot.supportedFilesystems = [ "ntfs" ];
+
   # Panther Lake benefits from newer hardware support; follow stable, not LTS.
   boot.kernelPackages = pkgs.linuxPackages_latest;
 

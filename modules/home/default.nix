@@ -1,7 +1,6 @@
 { inputs, ... }:
 
-{
-  # Preserve unmanaged files during migration; existing backups are not overwritten.
+{ # Preserve unmanaged files during migration; existing backups are not overwritten.
   home-manager.backupFileExtension = "before-home-manager";
 
   users.users.stoler = {
@@ -28,6 +27,7 @@
       ./mimeapps.nix
       ./nemo.nix
       ./pi.nix
+      ./claude.nix
     ];
 
     home.stateVersion = "25.11";

@@ -21,14 +21,15 @@
   services.upower.enable = true;
   services.power-profiles-daemon.enable = true;
 
-  # Use a service rather than running the D-Bus client inside udev.
+  # Use a service rather than running the D-Bus client inside udev: udev kills
+  # whatever a RUN+= leaves behind, and the client needs the daemon up first.
+  # Udev is the only trigger ("add" is the boot-time coldplug), so no target
+  # waits on this or on power-profiles-daemon, which nothing else wants at boot.
   services.udev.extraRules = ''
-    SUBSYSTEM=="power_supply", ACTION=="change", ENV{POWER_SUPPLY_ONLINE}=="[01]", RUN+="${pkgs.systemd}/bin/systemctl --no-block restart power-profile-auto.service"
+    SUBSYSTEM=="power_supply", ACTION=="add|change", ENV{POWER_SUPPLY_ONLINE}=="[01]", RUN+="${pkgs.systemd}/bin/systemctl --no-block restart power-profile-auto.service"
   '';
   systemd.services.power-profile-auto = {
     description = "Select power profile for the current power source";
-    # The daemon starts after multi-user.target; avoid ordering this before it.
-    wantedBy = [ "graphical.target" ];
     requires = [ "power-profiles-daemon.service" ];
     after = [ "power-profiles-daemon.service" ];
     unitConfig.StartLimitIntervalSec = 0;

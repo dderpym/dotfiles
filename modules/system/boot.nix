@@ -10,7 +10,6 @@
   # loader with the db key and installs UKIs + its own systemd-boot loader
   # entries. systemd-boot must stay disabled (docs force it off).
   boot.loader.systemd-boot.enable = lib.mkForce false;
-  # boot.loader.systemd-boot.enable = true;
 
   boot.lanzaboote = {
     enable = true;

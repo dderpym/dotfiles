@@ -195,14 +195,13 @@ in
       "Mod+Shift+Slash".action.show-hotkey-overlay = [ ];
       "Mod+Shift+E".action.quit = [ ];
 
-      # Run
       "Mod+Return" = {
         hotkey-overlay.title = "Open a Terminal: kitty";
         action.spawn = "kitty";
       };
       "Mod+R" = {
         hotkey-overlay.title = "Open the App Launcher: ";
-        # noctalia's launcher via IPC (wofi was removed from the stack)
+        # noctalia's launcher via IPC
         action.spawn = [ "noctalia" "msg" "panel-toggle" "launcher" ];
       };
       "Mod+V" = {
@@ -300,7 +299,6 @@ in
       "Mod+Ctrl+Home".action.move-column-to-first = [ ];
       "Mod+Ctrl+End".action.move-column-to-last = [ ];
 
-      # monitor-movement binds were commented out in the original KDL — omitted
       "Mod+Shift+Ctrl+H".action.move-column-to-monitor-left = [ ];
       "Mod+Shift+Ctrl+J".action.move-column-to-monitor-down = [ ];
       "Mod+Shift+Ctrl+K".action.move-column-to-monitor-up = [ ];

@@ -6,7 +6,7 @@ let
 
   llm = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
 
-  # The 14 skills pi runs, mapped to their pinned source dirs. Bump with
+  # The skills pi runs, mapped to their pinned source dirs. Bump with
   # `nix flake update`. pi discovers these from ~/.pi/agent/skills/.
   skills = {
     # mattpocock/skills — engineering
@@ -58,10 +58,8 @@ in
 {
   # pi binary from llm-agents (bun-compiled; ships fd/ripgrep itself), plus
   # the runtime deps it needs for package management (bun/node/uv) and browser
-  # automation (agent-browser + chromium via playwright). Was previously a
-  # wrapped package in pkgs/pi/flake.nix; folded in here so llm-agents' pi is
-  # used directly. llm-agents keeps its own nixpkgs (unstable) so
-  # cache.numtide.com hits — see the input comment in flake.nix.
+  # automation (agent-browser + chromium via playwright). llm-agents keeps its
+  # own nixpkgs so cache.numtide.com hits — see the input comment in flake.nix.
   home.packages = [
     llm.pi
     llm.agent-browser

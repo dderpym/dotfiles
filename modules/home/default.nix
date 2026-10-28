@@ -1,6 +1,7 @@
-{ inputs, ... }:
+{ ... }:
 
-{ # Preserve unmanaged files during migration; existing backups are not overwritten.
+{
+  # Preserve unmanaged files on first activation; existing backups are not overwritten.
   home-manager.backupFileExtension = "before-home-manager";
 
   users.users.stoler = {
@@ -8,7 +9,7 @@
     extraGroups = [ "wheel" "networkmanager" "docker" "input" "libvirtd" "gamemode" ];
   };
 
-  home-manager.users.stoler = { pkgs, lib, inputs, unstable, ... }: {
+  home-manager.users.stoler = { inputs, ... }: {
     imports = [
       inputs.catppuccin.homeModules.catppuccin
       inputs.niri-flake.homeModules.config

@@ -98,7 +98,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, lanzaboote, ... }@inputs:
+  outputs = { nixpkgs, home-manager, lanzaboote, ... }@inputs:
     let
       system = "x86_64-linux";
       # packages that only exist on unstable (noctalia); see input comment above

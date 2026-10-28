@@ -5,14 +5,12 @@
     inputs.nix-index-database.nixosModules.default
   ];
 
-  # FONTS
   fonts.packages = with pkgs; [
     nerd-fonts.jetbrains-mono
     nerd-fonts.fira-code
     nerd-fonts.droid-sans-mono
   ];
 
-  # CONTAINERS
   virtualisation.docker = {
     enable = true;
     # Keep socket activation, but don't start dockerd on every boot.
@@ -28,8 +26,7 @@
     # acl, libsodium, xz, ...) are restated at the top here — otherwise they
     # are silently lost.
     #
-    # Everything below was verified to exist in the locked nixpkgs
-    # (nixos-26.05, rev 104240a). Renames to keep in mind on update:
+    # Renames to keep in mind on update:
     #   - libjpeg-turbo  -> libjpeg
     #   - libgbm         -> split out of mesa as its own package
     #   - xorg set deprecated: xorg.xcbutil* -> libxcb-*, xorg.libXt -> libxt,
@@ -314,15 +311,14 @@
     ];
   };
 
-  # PROGRAMS
   programs.firefox.enable = true;
   programs.chromium.enable = true;
   services.openssh.enable = true;
   programs.gamemode.enable = true;
   programs.steam = {
     enable = true;
-    remotePlay.openFirewall = true; # Optional: open ports for Remote Play
-    dedicatedServer.openFirewall = true; # Optional: open ports for dedicated servers
+    remotePlay.openFirewall = true;
+    dedicatedServer.openFirewall = true;
   };
 
   environment.systemPackages = with pkgs; [

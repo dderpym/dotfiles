@@ -19,8 +19,7 @@
     '';
   };
 
-  # full prompt config lives in starship.nix; this module only owns the
-  # bash-init ordering hack and the package
+  # Full prompt config lives in starship.nix; bash integration stays off here.
   programs.starship = {
     enable = true;
     enableBashIntegration = false;

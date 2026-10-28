@@ -12,7 +12,7 @@
   # `virtualisation.libvirtd.qemu.package = pkgs.qemu_kvm` only if you never
   # want to emulate non-x86 targets. QEMU runs as root by default
   # (`qemu.runAsRoot` stays true), so no /dev/kvm or image-ownership fiddling.
-  
+
   virtualisation.libvirtd = {
     enable = true;
     qemu.vhostUserPackages = with pkgs; [ passt ];

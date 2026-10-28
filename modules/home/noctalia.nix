@@ -293,7 +293,6 @@ let
       enabled = true;
       # Noctalia runs fprintd verification beside the password PAM thread.
       fingerprint = true;
-      # v4 lockScreenBlur = 0 / lockScreenTint = 0
       blur_intensity = 0.0;
       tint_intensity = 0.0;
       # NOTE: beta.7 locks before logind suspend by default; the schema doesn't
@@ -411,10 +410,7 @@ let
       # re-assert the enable on every shell start: idempotent, and the flake
       # stays the source of truth even if the state file is reset.
       #
-      # wallpaper-random used to be a niri spawn loop (retry until the IPC
-      # socket was up); the started hook fires after IPC is ready, so the
-      # retry loop is unnecessary here. Random wallpaper each boot, owned by
-      # noctalia itself.
+      # The started hook fires once IPC is ready, so no retry loop is needed.
       started = [
         "noctalia msg plugins enable noctalia/bongocat"
         "noctalia msg plugins enable dotnetrob/cat"

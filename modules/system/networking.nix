@@ -7,13 +7,12 @@
   systemd.services.NetworkManager-wait-online.enable = false;
 
   services.tailscale.enable = true;
-  # Enable Tailscale routing features (server, client, or both)
   services.tailscale.useRoutingFeatures = "both";
 
   networking.firewall = {
     enable = true;
     # Fixes the UDP packet drops when using direct-connection exit nodes
-    checkReversePath = "loose"; 
+    checkReversePath = "loose";
   };
 
 }

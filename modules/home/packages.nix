@@ -5,7 +5,7 @@
 
   home.packages = with pkgs; [
     unstable.noctalia
-    pkgs.wl-clipboard
+    wl-clipboard
     (import ../../pkgs/niri-shot.nix { inherit pkgs; })
     xwayland-satellite
 
@@ -38,8 +38,6 @@
 
     python3
     unzip
-    wget
-    curl
     gnutar
 
     udiskie

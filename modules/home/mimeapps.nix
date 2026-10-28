@@ -2,8 +2,7 @@
 
 {
   # Default applications for the freedesktop MIME system.
-  # Generates ~/.config/mimeapps.list (replaces the stale file left over
-  # from the previous machine: remmina, libreoffice, lunarclient, etc.).
+  # Generates ~/.config/mimeapps.list.
   xdg.mimeApps.enable = true;
 
   xdg.mimeApps.defaultApplications = {

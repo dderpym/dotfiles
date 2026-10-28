@@ -496,15 +496,4 @@ in
   home.file.".local/share/noctalia/plugins" = {
     source = ../../pkgs/noctalia-plugins;
   };
-
-  # Heal the plugin enable state at switch time too (see hooks.started above):
-  # the enable lives in the daemon's state file, so run the same idempotent
-  # enables after activation — a state reset is fixed immediately instead of
-  # waiting for the next noctalia start. Absolute path: the activation env
-  # may not have the user profile on PATH.
-  home.activation.ensurePlugins = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    ${config.home.profileDirectory}/bin/noctalia msg plugins enable noctalia/bongocat >/dev/null 2>&1 || true
-    ${config.home.profileDirectory}/bin/noctalia msg plugins enable dotnetrob/cat >/dev/null 2>&1 || true
-    ${config.home.profileDirectory}/bin/noctalia msg plugins enable stoletop/micropanels >/dev/null 2>&1 || true
-  '';
 }

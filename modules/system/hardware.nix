@@ -63,8 +63,8 @@
   };
 
   # Enable modern zram-generator
-  boot.zram-generator.enable = true;
-  boot.zram-generator.settings = {
+  services.zram-generator.enable = true;
+  services.zram-generator.settings = {
     zram0 = {
       "zram-size" = "ram / 2";
       "compression-algorithm" = "zstd";

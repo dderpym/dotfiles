@@ -20,4 +20,16 @@
   # Boot straight into the default entry; hold a key (space) at boot to open the
   # menu for older generations.
   boot.loader.timeout = 0;
+
+  # systemd 260 PID 1 probes the console size with ANSI queries at startup, in
+  # the initrd and again after switch-root. The Linux VT never answers
+  # "CSI 18 t", so each probe idles for its full 333ms timeout (~0.67s per
+  # boot, no CPU or IO). Giving the size on the cmdline makes
+  # reset_dev_console_fd() skip the probe. Values are this laptop's fbcon grid
+  # (kernel logs "frame buffer device 180x60", same under simpledrm and xe).
+  # Drop once systemd skips the query on a VT (systemd/systemd#44473).
+  boot.kernelParams = [
+    "systemd.tty.rows.console=60"
+    "systemd.tty.columns.console=180"
+  ];
 }

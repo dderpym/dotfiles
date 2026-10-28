@@ -62,9 +62,19 @@
     fileSystems = [ "/" "/mnt/media" ];
   };
 
-  # Priority 5 (default) outranks the btrfs swapfile (-2), so compressed RAM
-  # fills first and the disk swapfile is only the overflow.
-  zramSwap.enable = true;
+  # Enable modern zram-generator
+  boot.zram-generator.enable = true;
+  boot.zram-generator.settings = {
+    zram0 = {
+      "zram-size" = "ram / 2";
+      "compression-algorithm" = "zstd";
+      "swap-priority" = 5;
+    };
+  };
+
+  boot.kernel.sysctl = {
+    "vm.swappiness" = 100;
+  };
 
   # Hibernate into the btrfs swapfile. resume_offset comes from
   # `btrfs inspect-internal map-swapfile -r /swap/swapfile` and must be

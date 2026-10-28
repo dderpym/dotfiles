@@ -21,6 +21,18 @@
   # menu for older generations.
   boot.loader.timeout = 0;
 
+  # systemd 260 PID 1 probes the console size with ANSI queries at startup, in
+  # the initrd and again after switch-root. The Linux VT never answers
+  # "CSI 18 t", so each probe idles for its full 333ms timeout (~0.67s per
+  # boot, no CPU or IO). Giving the size on the cmdline makes
+  # reset_dev_console_fd().
+  # Measured initrd gain is ~0.15-0.3s, less than the probe timeouts suggest.
+  # Drop once systemd skips the query on a VT (systemd/systemd#44473).
+  boot.kernelParams = [
+    "systemd.tty.rows.console=60"
+    "systemd.tty.columns.console=180"
+  ];
+
   # home-manager orders its activation Before=systemd-user-sessions, so the
   # SDDM greeter waited ~1.3s for it on every boot. Activation re-applies an
   # already-applied generation at boot, so let it run during the greeter and

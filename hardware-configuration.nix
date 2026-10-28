@@ -22,7 +22,7 @@
   fileSystems."/home" =
     { device = "/dev/disk/by-uuid/89f724c8-a030-4e95-97c6-9ce1140a977b";
       fsType = "btrfs";
-      options = [ "subvol=@home,compress=zstd,relatime" ];
+      options = [ "subvol=@home,compress=zstd,noatime" ];
     };
 
   fileSystems."/nix" =
@@ -45,16 +45,17 @@
 
   fileSystems."/mnt/media" =
     { device = "/dev/disk/by-uuid/83f00a95-5473-485d-b6c1-6936139c0d79";
-      fsType = "btrfs,compress=zstd,noatime";
+      fsType = "btrfs";
+      options = [ "compress=zstd" "noatime" ];
     };
 
   fileSystems."/boot" =
     { device = "/dev/disk/by-uuid/545D-74A4";
       fsType = "vfat";
-      options = [ "fmask=0022" "dmask=0022" ];
+      options = [ "fmask=0077" "dmask=0077" ];
     };
 
-  swapDevices = [ ];
+  swapDevices = [ { device = "/swap/swapfile"; size = 16 * 1024; } ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.npu.enable = true;

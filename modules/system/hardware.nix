@@ -46,12 +46,30 @@
   };
 
   services.logind.settings.Login = {
-    HandleLidSwitch = "suspend";
+    HandleLidSwitch = "suspend-then-hibernate";
     # Also sleep with a dock/external monitor; logind otherwise ignores the lid.
-    HandleLidSwitchDocked = "suspend";
+    HandleLidSwitchDocked = "suspend-then-hibernate";
     HandlePowerKey = "poweroff";
   };
 
   services.udisks2.enable = true;
   services.gvfs.enable = true;
+
+  services.btrfs.autoScrub = {
+    enable = true;
+    interval = "monthly";
+    fileSystems = [ "/" "/mnt/media" ];
+  };
+
+  # Priority 5 (default) outranks the btrfs swapfile (-2), so compressed RAM
+  # fills first and the disk swapfile is only the overflow.
+  zramSwap.enable = true;
+
+  # Hibernate into the btrfs swapfile. resume_offset comes from
+  # `btrfs inspect-internal map-swapfile -r /swap/swapfile` and must be
+  # updated whenever the swapfile is recreated (e.g. a size change).
+  boot.resumeDevice = "/dev/disk/by-uuid/89f724c8-a030-4e95-97c6-9ce1140a977b";
+  boot.kernelParams = [ "resume_offset=6386453" ];
+
+  systemd.sleep.settings.Sleep.HibernateDelaySec = "1h";
 }

@@ -17,5 +17,7 @@
   };
 
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.timeout = 5;
+  # Boot straight into the default entry; hold a key (space) at boot to open the
+  # menu for older generations.
+  boot.loader.timeout = 0;
 }

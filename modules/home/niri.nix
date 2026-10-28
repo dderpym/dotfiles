@@ -256,11 +256,11 @@ in
 
       "XF86MonBrightnessUp" = {
         allow-when-locked = true;
-        action.spawn = [ "brightnessctl" "--class=backlight" "set" "+10%" ];
+        action.spawn = [ "brightnessctl" "--class=backlight" "-qe" "set" "2%+" ];
       };
       "XF86MonBrightnessDown" = {
         allow-when-locked = true;
-        action.spawn = [ "brightnessctl" "--class=backlight" "set" "10%-" ];
+        action.spawn = [ "brightnessctl" "--class=backlight" "-qe" "set" "2%-" ];
       };
 
       "Mod+E" = {

@@ -32,6 +32,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Framework 13 Pro (Panther Lake) profile: fwupd, fingerprint, TRIM, sensors.
+    nixos-hardware = {
+      url = "github:NixOS/nixos-hardware";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Let Catppuccin use its own nixpkgs so Whiskers and themes match its cache.
     catppuccin.url = "github:catppuccin/nix";
 
@@ -107,6 +113,8 @@
             ./configuration.nix
 
             lanzaboote.nixosModules.lanzaboote
+
+            inputs.nixos-hardware.nixosModules.framework-intel-core-ultra-series3
 
             home-manager.nixosModules.home-manager
             {

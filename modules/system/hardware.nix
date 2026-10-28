@@ -3,7 +3,7 @@
 {
   hardware.bluetooth.enable = true;
 
-  services.fprintd.enable = true;
+  # fprintd itself is enabled by the nixos-hardware Framework profile.
   # Noctalia drives fprintd directly for lockscreen fingerprint auth; keep its
   # password PAM path from trying to claim the same reader first.
   security.pam.services.login.fprintAuth = false;

@@ -6,6 +6,7 @@
   services.wluma = {
     enable = true;
     settings = {
+      step_delay = 10;
       als.iio = {
         path = "/sys/bus/iio/devices";
         thresholds = {

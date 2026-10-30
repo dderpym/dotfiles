@@ -21,7 +21,8 @@
       output.backlight = [{
         name = "eDP-1";
         path = "/sys/class/backlight/intel_backlight";
-        capturer = "wayland";
+        # "none" disables screen-content analysis, so only the ALS drives brightness.
+        capturer = "none";
       }];
     };
   };

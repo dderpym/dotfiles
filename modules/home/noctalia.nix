@@ -326,7 +326,7 @@ let
     # --- BRIGHTNESS ---
     brightness = {
       enable_ddcutil = false;
-      minimum_brightness = 0.0;
+      minimum_brightness = 0.00001;
       sync_all_monitors = false;
     };
 

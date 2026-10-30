@@ -260,7 +260,7 @@ in
       };
       "XF86MonBrightnessDown" = {
         allow-when-locked = true;
-        action.spawn = [ "brightnessctl" "--class=backlight" "-qe" "set" "2%-" ];
+        action.spawn = [ "brightnessctl" "--class=backlight" "-qe" "--min-value=1" "set" "2%-" ];
       };
 
       "Mod+E" = {

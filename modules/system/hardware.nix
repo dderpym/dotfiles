@@ -9,6 +9,10 @@
   security.pam.services.login.fprintAuth = false;
   security.pam.services.sudo.rules.auth.fprintd.settings.timeout = 10;
 
+  # Echo * while typing the sudo password. Sudoers-level, so it doesn't touch
+  # the PAM/fprintd stack above.
+  security.sudo.extraConfig = "Defaults pwfeedback";
+
   services.libinput.enable = true;
 
   services.pipewire = {

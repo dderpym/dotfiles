@@ -3,6 +3,8 @@
 {
   programs.neovim = {
     enable = true;
+    # NixOS defaults EDITOR to nano; this exports EDITOR/VISUAL=nvim.
+    defaultEditor = true;
     withPython3 = true;
     withRuby = true;
     # Plugin builds, search, formatting and image rendering need these on PATH.

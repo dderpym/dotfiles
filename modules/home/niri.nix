@@ -183,6 +183,16 @@ in
         default-column-width = { fixed = 1080; };
         default-window-height = { fixed = 920; };
       }
+
+      # Steam notification toasts: pin to the bottom-right corner
+      {
+        matches = [ { app-id = "steam"; title = "^notificationtoasts_\\d+_desktop$"; } ];
+        default-floating-position = {
+          x = 10;
+          y = 10;
+          relative-to = "bottom-right";
+        };
+      }
     ];
 
     # lets noctalia notification actions / window activation work even when

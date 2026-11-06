@@ -8,6 +8,7 @@
     ./modules/system/nix.nix
     ./modules/system/networking.nix
     ./modules/system/display.nix
+    ./modules/system/clight.nix
     ./modules/system/locale.nix
     ./modules/system/apps.nix
     ./modules/system/virtualisation.nix

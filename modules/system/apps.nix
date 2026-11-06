@@ -329,12 +329,14 @@
     # Secure Boot key management + verification (sbctl status / verify / enroll-keys)
     sbctl
     git
-    nano
     curl
     wget
     # pactl — volume/mute keys (client for the system-managed pipewire-pulse)
     pulseaudio
   ];
+
+  # On by default in NixOS; neovim is the editor (see modules/home/neovim.nix).
+  programs.nano.enable = false;
 
   programs.nix-index-database.comma.enable = true;
 }

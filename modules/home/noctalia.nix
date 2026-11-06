@@ -314,6 +314,9 @@ let
       position = "top_right";
       position_vertical = "top_right";
       border = true; # square OSD cards keep their outline
+      # clight retunes the backlight from the ambient light sensor every few
+      # seconds; don't pop an OSD for each automatic step.
+      kinds.brightness = false;
     };
 
     # --- AUDIO ---

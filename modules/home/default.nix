@@ -25,6 +25,7 @@
       ./kitty.nix
       ./niri.nix
       ./noctalia.nix
+      ./autobright.nix
       ./mimeapps.nix
       ./nemo.nix
       ./pi.nix

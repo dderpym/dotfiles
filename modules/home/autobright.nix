@@ -1,9 +1,10 @@
-{ pkgs, ... }:
+{ pkgs, osConfig, ... }:
 
 let
   autobright = pkgs.runCommandCC "autobright" { } ''
     mkdir -p $out/bin
     $CC -O2 -Wall -Wextra -Werror \
+      -DBACKLIGHT='"${osConfig.machine.backlight}"' \
       -DBRIGHTNESSCTL='"${pkgs.brightnessctl}/bin/brightnessctl"' \
       -o $out/bin/autobright ${./autobright.c} -lm
   '';

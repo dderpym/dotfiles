@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 {
   hardware.bluetooth.enable = true;
@@ -30,6 +30,9 @@
   # Udev is the only trigger ("add" is the boot-time coldplug), so no target
   # waits on this or on power-profiles-daemon, which nothing else wants at boot.
   services.udev.extraRules = ''
+    # External USB must not wake from sleep. The built-in keyboard is PS/2
+    # (i8042) and wakes independently of the xHCI controllers.
+    ACTION=="add", SUBSYSTEM=="pci", KERNEL=="${lib.concatStringsSep "|" config.machine.externalUsbControllers}", ATTR{power/wakeup}="disabled"
     SUBSYSTEM=="power_supply", ACTION=="add|change", ENV{POWER_SUPPLY_ONLINE}=="[01]", RUN+="${pkgs.systemd}/bin/systemctl --no-block restart power-profile-auto.service"
   '';
   systemd.services.power-profile-auto = {
@@ -83,7 +86,7 @@
   # Hibernate into the btrfs swapfile. resume_offset comes from
   # `btrfs inspect-internal map-swapfile -r /swap/swapfile` and must be
   # updated whenever the swapfile is recreated (e.g. a size change).
-  boot.resumeDevice = "/dev/disk/by-uuid/89f724c8-a030-4e95-97c6-9ce1140a977b";
+  boot.resumeDevice = config.machine.rootDevice;
   boot.kernelParams = [ "resume_offset=6386453" ];
 
   systemd.sleep.settings.Sleep.HibernateDelaySec = "1h";

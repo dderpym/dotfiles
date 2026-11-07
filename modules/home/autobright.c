@@ -23,7 +23,9 @@
 #define BRIGHTNESSCTL "brightnessctl"
 #endif
 
+#ifndef BACKLIGHT
 #define BACKLIGHT "intel_backlight"
+#endif
 #define BL_DIR "/sys/class/backlight/" BACKLIGHT
 
 /* Curve: fraction = A * lux^K through two hand-picked points, floored. */
@@ -45,6 +47,7 @@
 #define FADE_STEP 0.01    /* max perceptual change per tick while fading */
 #define FADE_TICK_MS 30
 #define FADE_MAX_TICKS 200 /* give up if brightness refuses to move */
+#define SETTLE_S 15       /* offset untouched this long = the value you settled on */
 
 extern char **environ;
 
@@ -232,12 +235,59 @@ static double target_p(double lux)
 	return clamp(curve_p(lux) + read_offset(), 0.0, 1.0);
 }
 
+/* ---- offset log ---- */
+
+static double now_s(void)
+{
+	struct timespec ts;
+
+	clock_gettime(CLOCK_REALTIME, &ts);
+	return ts.tv_sec + ts.tv_nsec / 1e9;
+}
+
+static double offset_mtime(void)
+{
+	struct stat st;
+
+	if (stat(offset_path, &st) != 0)
+		return 0;
+	return st.st_mtim.tv_sec + st.st_mtim.tv_nsec / 1e9;
+}
+
+/* One CSV row per settled offset, to judge whether the curve needs to learn:
+ * time, lux you set it at, curve alone, the offset, resulting backlight. */
+static void log_settled_offset(double lux)
+{
+	char path[560], stamp[40];
+	time_t t = time(NULL);
+	struct tm tm;
+	int fresh;
+	FILE *f;
+
+	snprintf(path, sizeof path, "%s/offsets.csv", state_dir);
+	fresh = access(path, F_OK) != 0;
+	mkdir(state_dir, 0755);
+	f = fopen(path, "a");
+	if (!f)
+		return;
+	if (fresh)
+		fputs("time,lux,curve_pct,offset,backlight_pct\n", f);
+	localtime_r(&t, &tm);
+	strftime(stamp, sizeof stamp, "%Y-%m-%dT%H:%M:%S%z", &tm);
+	fprintf(f, "%s,%.1f,%.2f,%+.4f,%.2f\n", stamp, lux,
+		curve_frac(lux) * 100, read_offset(),
+		current_raw() / max_raw() * 100);
+	fclose(f);
+}
+
 /* ---- commands ---- */
 
 static void daemon_loop(void)
 {
 	double smooth = 0, last_set = -1;
-	int have_smooth = 0;
+	double seen_mtime = offset_mtime(); /* start state is not a new change */
+	double pending_lux = 0;
+	int have_smooth = 0, pending = 0;
 
 	for (;;) {
 		double log_lux = log1p(read_lux());
@@ -257,6 +307,17 @@ static void daemon_loop(void)
 		 * offset. */
 		if (last_set >= 0 && fabs(cur - last_set) > ADOPT_THRESHOLD)
 			write_offset(cur - curve_p(lux));
+
+		/* Log the offset once it has stopped changing, not every key
+		 * press. The lux is the latest one seen while it was changing. */
+		if (offset_mtime() != seen_mtime) {
+			seen_mtime = offset_mtime();
+			pending_lux = lux;
+			pending = 1;
+		} else if (pending && now_s() - seen_mtime >= SETTLE_S) {
+			log_settled_offset(pending_lux);
+			pending = 0;
+		}
 
 		if (fabs(target_p(lux) - cur) >= DEADBAND) {
 			/* Re-read the offset every tick so a key press mid-fade wins. */

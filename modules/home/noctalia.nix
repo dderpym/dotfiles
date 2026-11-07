@@ -1,4 +1,4 @@
-{ config, lib, pkgs, unstable, ... }:
+{ config, osConfig, lib, pkgs, unstable, ... }:
 
 let
   noctalia = unstable.noctalia;
@@ -43,7 +43,6 @@ let
       end = [
         "tray"
         "volume"
-        "brightness"
         "battery"
         "group:sysmon"
         "clock"
@@ -93,7 +92,7 @@ let
 
       bongocat = {
         type = "noctalia/bongocat:cat";
-        input_devices = [ "/dev/input/by-path/platform-i8042-serio-0-event-kbd" ];
+        input_devices = [ osConfig.machine.keyboardEvent ];
         executable_path = "evtest";
         audio_spectrum = true;
         tappy_mode = true;
@@ -107,15 +106,6 @@ let
         actions = {
           left = "panel-toggle stoletop/micropanels:volume";
           middle = "exec pwvucontrol || pavucontrol";
-        };
-      };
-
-      brightness = {
-        icon_color = "secondary";
-        show_label = false;
-        capsule_border = "secondary";
-        actions = {
-          left = "panel-toggle stoletop/micropanels:brightness";
         };
       };
 

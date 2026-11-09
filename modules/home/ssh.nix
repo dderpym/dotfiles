@@ -23,12 +23,11 @@
         User = "ec2-user";
         Port = 22;
       };
-      "oci-birdwax" = {
-        HostName = "birdwax.duckdns.org";
+      # Reached over Tailscale (MagicDNS); public SSH is firewalled off.
+      "birdwax" = {
         User = "ubuntu";
       };
-      "oci-ostrichwax" = {
-        HostName = "ostrichwax.duckdns.org";
+      "ostrichwax" = {
         User = "ubuntu";
       };
       "github.com" = {

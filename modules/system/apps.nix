@@ -313,7 +313,6 @@
 
   programs.firefox.enable = true;
   programs.chromium.enable = true;
-  services.openssh.enable = true;
   programs.gamemode.enable = true;
   programs.steam = {
     enable = true;

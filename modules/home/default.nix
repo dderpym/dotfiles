@@ -22,6 +22,7 @@
       ./neovim.nix
       ./shell.nix
       ./starship.nix
+      ./tmux.nix
       ./kitty.nix
       ./niri.nix
       ./noctalia.nix

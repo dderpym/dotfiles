@@ -6,6 +6,7 @@
     ./modules/system/machine.nix
     ./modules/system/hardware.nix
     ./modules/system/boot.nix
+    ./modules/system/encryption.nix
     ./modules/system/nix.nix
     ./modules/system/networking.nix
     ./modules/system/display.nix

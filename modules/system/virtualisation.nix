@@ -15,7 +15,8 @@
 
   virtualisation.libvirtd = {
     enable = true;
-    qemu.vhostUserPackages = with pkgs; [ passt ];
+    # virtiofsd: host<->guest shared folders via virtiofs
+    qemu.vhostUserPackages = with pkgs; [ passt virtiofsd ];
   };
   virtualisation.spiceUSBRedirection.enable = true;
 
